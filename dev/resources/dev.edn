@@ -1,0 +1,2 @@
+{:duct.core/environment :development
+ :duct.core/include ["open_source/config.edn"]}

@@ -1,0 +1,32 @@
+{:duct.core/project-ns open-source
+ :duct.core/environment :production
+
+ :duct.module/logging {}
+ :duct.module.web/site {}
+
+ :duct.middleware.web/defaults
+ {:params    {:urlencoded true
+              :keywordize true
+              :multipart  true
+              :nested     true}
+  :cookies   true
+  :session   {:flash true
+              :cookie-attrs {:http-only true}}
+  :security  {:anti-forgery   false
+              :xss-protection {:enable? true, :mode :block}
+              :frame-options  :sameorigin
+              :content-type-options :nosniff}
+  :static    {:resources ""}
+  :responses {:not-modified-responses false
+              :absolute-redirects     true
+              :content-types          true
+              :default-charset        "utf-8"}}
+
+ :duct.server.http/jetty
+ {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+
+ :duct.router/cascading
+ [#ig/ref :open-source.endpoint/static]
+
+ :open-source.endpoint/static
+ {}}
