@@ -1,0 +1,145 @@
+// uses compass stuff
+
+$base-font-size: 16px;
+$base-line-height: 24px;
+
+@include establish-baseline;
+
+
+$sans-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$serif-family: Georgia, Palatino Linotype, Book Antiqua, Palatino, serif;
+$mono-family: "Source Code Pro", "Bitstream Vera Sans Mono", monospace;
+
+$ms-scale: 1.25;
+$ms-up1: $base-font-size * $ms-scale;
+$ms-up2: $ms-up1 * $ms-scale;
+$ms-up3: $ms-up2 * $ms-scale;
+$ms-up4: $ms-up3 * $ms-scale;
+$ms-up5: $ms-up4 * $ms-scale;
+$ms-up6: $ms-up5 * $ms-scale;
+$ms-up7: $ms-up6 * $ms-scale;
+$ms-down1: $base-font-size / $ms-scale;
+
+
+body, input, textarea {
+  font-family: $sans-family;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+p {
+  @include trailer;
+}
+
+ol {
+  list-style: decimal;
+  @include trailer;
+}
+
+.secondary ol {
+  list-style: none;
+}
+
+li p {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: $sans-family;
+  font-weight: 600;
+}
+
+.markdown-help table {
+  h1, h2, h3, h4, h5 {
+    margin-bottom: 0;
+  }
+}
+
+h1 {
+  @include adjust-font-size-to($ms-up3, 2);
+  @include trailer(1, $ms-up3);
+}
+
+h2 {
+  @include adjust-font-size-to($ms-up2, 1);
+  @include trailer(1, $ms-up2);
+
+  .fa {
+    line-height: inherit;
+  }
+}
+
+h3 {
+  @include adjust-font-size-to($ms-up1, 1);
+  @include trailer(1, $ms-up1);
+}
+
+.listingblock pre {
+  font-family: $mono-family;
+  @include adjust-font-size-to(16px);
+  line-height: 1.25;
+}
+
+.paragraph code {
+  font-size: 16px;
+  font-family: $mono-family;
+  border-radius: 2px;
+  padding: 0.2em 0;
+  &::before, &::after{
+               letter-spacing: -0.2em;
+               content: "\00a0 ";
+             }
+}
+
+.add-form h2 {
+  @include adjust-font-size-to($ms-up2, 2);
+}
+
+.add-opp-btn {
+  font-family: $sans-family;
+  font-weight: 600;
+}
+
+.delete {
+  @include adjust-font-size-to(16px);
+}
+
+.simple-list {
+  .name {
+    font-weight: 600;
+  }
+
+  p {
+    @include trailer;
+  }
+}
+
+#feed-item-list .name {
+  @include adjust-font-size-to(15px);
+  // font-style: italic;
+}
+
+.tip {
+  @include adjust-font-size-to($ms-down1);
+  color: $tip;
+}
+
+th {
+  // font-weight: bold;
+  @include adjust-font-size-to(12px);
+  font-family: $sans-family;
+}
+
+#review-feeds h2 span.refresh-progress {
+  @include adjust-font-size-to($base-font-size, 1, $ms-up2)
+}
+
+#session-info, #footer .content {
+  @include adjust-font-size-to($ms-down1);
+}

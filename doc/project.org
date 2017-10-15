@@ -1,0 +1,34 @@
+* update deps
+** convert to sweet-tooth backend/frontend
+** deployment
+* features
+** table home page
+** ensure that delete works
+** some kind of delete / flag voting?
+** repos/get
+https://developer.github.com/v3/repos/#get
+*** stargazers
+*** watchers
+*** updated_at
+last update
+** stats
+*** number of contributors
+https://developer.github.com/v3/repos/statistics/#get-contributors-list-with-additions-deletions-and-commit-counts
+*** participation (weekly commit count)
+https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-for-the-repository-owner-and-everyone-else
+
+* breakdown
+** frontend
+*** get request for list of projects
+**** stub with pre-popped map of projects
+*** show list of projects
+*** navigate to single project
+*** edit project
+*** create project
+** backend
+*** start/stop a watcher
+**** add to config.edn
+**** create multimethods
+*** list projects
+*** create project
+*** update project

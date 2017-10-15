@@ -1,0 +1,30 @@
+.tabs {
+  background: $charcoal;
+  
+  li {
+    background: $inactive;
+    padding: 1em 2em;
+    float: left;
+    cursor: pointer;
+    transition: all .15s;
+    @include adjust-font-size-to($ms-up1);
+  }
+  
+  .active, li:hover {
+    background: $active;
+  }
+}
+
+.tab-panel {
+  display: none;
+  &.active {
+    display: block;
+  }
+}
+
+.tab-panels {
+  padding: 1.5em 1em;
+  border-top: .25em solid $active;
+  position: relative;
+  overflow: hidden;
+}

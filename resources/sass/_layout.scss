@@ -1,0 +1,859 @@
+$susy: (
+  columns: 12,
+  column-width: 4em,
+  gutters: 1/4,
+  math: fluid,
+  output: static,
+  container-position: center
+);
+
+/* media */
+$iphone4: 'only screen' (min-device-width 320px) (max-device-width 480px) (orientation portrait) (-webkit-min-device-pixel-ratio 2);
+$iphone5: 'only screen' (min-device-width 320px) (max-device-width 568px) (-webkit-min-device-pixel-ratio 2) (orientation portrait);
+$iphone6: 'only screen' (min-device-width 375px) (max-device-width 667px) (-webkit-min-device-pixel-ratio 2) (orientation portrait);
+$iphone6p: 'only screen' (min-device-width 414px) (max-device-width 736px) (-webkit-min-device-pixel-ratio 3) (orientation portrait);
+
+$galaxy: 'screen' (device-width: 320px) (device-height: 640px) (orientation: portrait);
+
+$mobile: $iphone4, $iphone5, $iphone6, $iphone6p, $galaxy;
+
+
+$narrow: 0 59em;
+
+$vnarrow: 0 40em;
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  position: relative;
+}
+
+.container {
+  @include container;
+  padding: 0 2em;
+}
+
+.wrapper {
+  @include padding-trailer(4);
+}
+
+.clear {
+  clear: both;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.field {
+  @include trailer;
+  label span:last-child {
+    margin-right: .5em;
+  }
+}
+
+.tip {
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+}
+
+.submission-progress {
+  margin-left: .5em;
+  font-style: italic;
+}
+
+.discard-changes {
+  display: inline-block;
+  margin-left: 1em;
+  cursor: pointer;
+}
+
+.breadcrumbs {
+  @include trailer;
+}
+
+.footer {
+  background: $darkish;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  @include leader(3);
+  @include padding-leader(.5);
+  @include padding-trailer(.5);
+  a {
+    color: $charcoal;
+    text-decoration: underline;
+    &:hover {
+      color: $charcoal;
+    }
+  }
+}
+
+
+.hero {
+  background: $hero-bg url(/images/hammer-10.png) no-repeat 1.5em bottom;
+  color: $hero-color;
+  background-size: 200px;
+  position: relative;
+  
+  @include padding-leader(2);
+  @include padding-trailer(2);
+  @include trailer(1);
+
+  .banner {
+    font-weight: 700;
+    @include adjust-font-size-to($ms-up5,2);
+    letter-spacing: 2px;
+    text-shadow: -2px 2px rgba(0,0,0,0.1);
+  }
+  .tagline {
+    //font-style: italic;
+    font-weight: 300;
+    letter-spacing: 1px;
+    //text-transform: uppercase;
+    @include adjust-font-size-to($ms-up1);
+  }
+
+  .caveat {
+    position: absolute;
+    //font-weight: 300;
+    bottom: 0;
+    right: 2em;
+    font-style: italic;
+  }
+
+  .banner, .tagline {
+    a, a:hover {
+         color: $hero-color;
+         display: block;
+       }
+  }
+
+  .manage {
+    position: absolute;
+    display: block;
+    left: span(9 of 12);
+    padding: .2em 1em 0;
+    background: white;
+    bottom: -2.5em;
+  }
+}
+
+.preview-notice {
+  background: $active;
+  color: white;
+  border-bottom: 3px solid rgba(0,0,0,0.3);
+  padding: .25em 0;
+  color: $charcoal;
+  a, a:hover {
+       color: white;
+     }
+}
+
+.view-all {
+  @include trailer;
+}
+
+.main {
+  @include span(9 of 12);
+}
+
+@include breakpoint($mobile) {
+  
+  $susy: (
+    columns: 6,
+    column-width: 4em,
+    gutters: 1/4,
+    math: fluid,
+    output: static,
+    container-position: center
+  );
+
+  .container {
+    @include container;
+    padding: 0 1em;
+    font-size: 150%;
+    line-height: 150%;
+  }
+  
+  .main.listings, .secondary.listings {
+    width: 100%
+  }
+  .secondary.listings {
+    @include leader;
+    .target {
+      display: none;
+    }
+  }
+}
+
+//////////////
+// Right column
+//////////////
+
+.secondary {
+  @include span(3 of 12 at 10);
+  
+  color: #888;
+  h3 {
+    color: #777;
+    font-weight: normal;
+    @include trailer(.5, $ms-up1);
+  }
+  .section {
+    @include trailer;
+  }
+}
+
+.book-cover {
+  //text-align: center;
+  img {
+    max-height: 9em;
+  }
+}
+
+.sea-monster {
+  //text-align: center;
+  img {
+    max-height: 6em;
+  }
+}
+
+//////////////
+// listings
+//////////////
+
+.title {
+  @include adjust-font-size-to($ms-up1);
+}
+
+.listing, .detail {
+  background: white;
+  border: 1px solid #eee;
+  padding: 1em;
+
+  .company-name, .company-elevator-pitch {
+    display: inline-block;
+  }
+
+  .company-elevator-pitch, .tagline {
+    color: #999;
+  }
+
+  .company-name {
+    margin-right: .5em;
+  }
+}
+
+.listing {
+  display: block;
+  color: $charcoal;
+  &:hover {
+    color: $charcoal;
+  }
+  .beginner-friendly {
+    color: $salmon;
+    @include adjust-font-size-to($ms-down1);
+  }
+}
+
+.listings {
+
+  .company-name, .company-elevator-pitch, .company-location, .published-at, .tagline {
+    @include adjust-font-size-to($ms-down1);
+  }
+  
+  .published-at {
+    font-style: italic;
+    color: #bbb;
+    text-align: right;
+  }
+
+  &.public {
+    .secondary {
+      float: right;
+    }
+  }
+}
+
+.pub {
+  .listing-list {
+    // border-bottom: 1px solid #eee;
+  }
+
+  .listing-container {
+    position: relative;
+    @include span(3 of 9);
+    &:nth-child(3n) {
+      @include span(3 of 9 at 7);
+    }
+    height: 10.5em;
+    @include trailer(.5);
+    z-index: 0;
+    &:hover {
+      z-index: 1;
+    }
+  }
+  
+  .listing {
+    // border-bottom: none;
+    box-sizing: border-box;
+    height: 10.5em;
+    width: 100%;
+    overflow-y: hidden;
+    cursor: pointer;
+    z-index: 0;
+    position: relative;
+    transition: all 0.2s;
+    left: 0;
+    top: 0;
+    box-shadow: none;
+    &:hover {
+      height: 16.5em;
+      width: 16em;
+      z-index: 1;
+      left: -1.5em;
+      top: -.5em;
+      // border: 1px solid #ffd4cc;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    }
+  }
+}
+
+// a single listing
+.detail {
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    //color: #999;
+  }
+  
+  h1 {
+    @include trailer(.5, $ms-up3);
+  }
+
+  h2 {
+    @include trailer(.5, $ms-up2);
+  }
+
+  h3 {
+    @include trailer(.5, $ms-up1);
+  }
+  
+  p {
+    @include trailer(.5);
+  }
+  
+  .published-at {
+    color: #999;
+    text-transform: uppercase;
+    font-style: normal;
+    text-align: left;
+    @include adjust-font-size-to($ms-down1);
+    @include trailer(.5, $ms-down1);
+  }
+
+  .logo {
+    @include span(3 of 12 at 10);
+  }
+
+  .description {
+    @include span(9 of 12);
+  }
+
+  .company-name {
+    @include adjust-font-size-to($ms-up1);
+  }
+
+  .application-instructions {
+    background: #f0f0f0;
+    border-radius: 3px;
+    padding: 1em;
+    clear: both;
+    @include leader;
+    
+    div *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@include breakpoint($vnarrow) {
+  .detail {
+    .description {
+      width: 100%;
+    }
+
+    .logo {
+      width: auto;
+      float: none;
+    }
+    
+    .secondary {
+      @include leader;
+      @include padding-leader;
+      @include trailer;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      width: 100%;
+    }
+  }
+}
+
+.job-listings .links a {
+  display: block;
+  color: $charcoal;
+  &:hover {
+    color: $active;
+  }
+  @include trailer(.25);
+}
+
+.meta {
+  @include padding-trailer;
+  @include trailer;
+  border-bottom: 1px solid #eee;
+
+  .title {
+    @include adjust-font-size-to($ms-up4, 2);
+  }
+
+  .tagline {
+    @include adjust-font-size-to($ms-up1);
+    color: $charcoal;
+  }
+}
+
+.tag-container {
+  height: 22px;
+  padding-top: 2px;
+  display: inline-block;
+}
+
+.tag {
+  @include adjust-font-size-to($ms-down1);
+  background: #eee;
+  display: inline-block;
+  padding: 0 .6em;
+  margin-right: .2em;
+  color: $charcoal;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+  
+  &.active {
+    background: $salmon;
+  }
+}
+
+.list .tag:hover {
+  cursor: pointer;
+  top: -1px;
+}
+
+.links {
+  @include trailer;
+}
+
+.manage .target, {
+  color: rgba(0,0,0,0.7);
+  padding: .5em .75em;
+  //box-shadow: none;
+  @include adjust-font-size-to($ms-up1);
+  @include trailer(1, $ms-up1);
+}
+
+.section .target {
+  padding: 0.5em 0.75em;
+  margin-top: -1em;
+}
+
+.my-data {
+  h3 {
+    margin-bottom: 0;
+  }
+  ul {
+    @include trailer;
+    border-top: 1px solid #eee;
+  }
+  li {
+    padding: 1em;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: .2s all;
+    &:hover {
+      background: white;
+    }
+  }
+  .published-at {
+    float:right;
+  }
+}
+
+.section.search input {
+  width: 100%;
+}
+
+.listing {
+  &.feature {
+    background: #ffffe2 !important;
+  }
+  .logo {
+    float: left;
+    margin-right: 8px;
+    position: relative;
+    height: 3em;
+    line-height: 3em;
+    width: 49px;
+    img {
+      vertical-align: middle;
+    }
+  }
+  .text {
+    margin-left: 57px;
+  }
+  .remote {
+    text-align: right;
+  }
+}
+
+//////////////
+// forms
+//////////////
+
+.wizard {
+  @include trailer;
+}
+
+.edit-listing {
+  position: relative;
+  
+  h3 {
+    font-weight: 200;
+  }
+  .preview {
+    background: #fafafa;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1.5em 1em;
+    bottom: 0;
+    overflow-y: auto;
+    margin-right: 0;
+    box-sizing: border-box;
+    width: 37em;
+    float: right;
+    transition: all .2s;
+
+    h3 {
+      margin-bottom: 0;
+    }
+    
+    .listing, .detail {
+      background: white;
+      border: 1px solid #eee;
+      padding: 1em;
+    }
+
+    .listing {
+      @include trailer;
+    }
+
+    .core {
+      //@include span(5 of 7);
+    }
+
+    .secondary {
+      float: right;
+      //@include span(2 of 7 at 6);
+    }
+
+    &.expand {
+      width: 100%;
+      .preview-frame .detail {
+        width: auto;
+      }
+      .listing {
+        max-width: 75%;
+      }
+    }
+
+    .toggle.show {
+      display: none;
+    }
+  }
+
+  @include breakpoint($narrow) {
+    .preview {
+      width: 100%;
+      .toggle.expand { display: none; }
+      .toggle.show { display: inline-block; }
+    }
+  }
+
+  .placeholder, .company-elevator-pitch.placeholder {
+    font-style: italic;
+    color: rgba(0,0,0, 0.3)
+  }
+  .detail h3 {
+    font-weight: 600;
+  }
+}
+
+.preview-frame {
+  overflow-x: scroll;
+  .detail {
+    width: 59em;
+  }
+}
+
+.pay-form {
+  min-height: 47em;
+}
+
+h2 {
+  .toggle {
+    font-weight: normal;
+    display: inline-block;
+    margin-left: .5em;
+    color: $salmon;
+    cursor: pointer;
+    @include adjust-font-size-to($base-font-size, 1, $ms-up2);
+  }
+}
+
+.listing-form {
+  .form {
+    width: 100%;
+    
+    input[type=text], textarea, p {
+      width: 100%;
+    }
+
+    textarea {
+      height: 14em;
+    }
+  }
+
+  .section {
+    
+    .field {
+      @include span(7 of 12);
+      transition: all .4s;
+      clear: both;
+      
+      label {
+        font-weight: bold;
+      }
+      &.job-description {
+        width: 100%;
+      }
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// preview toggle
+.show-preview {
+  .form {
+    .field, .field.job-description {
+      @include span(4 of 12);
+    }
+  }
+}
+
+.slide-container .slide-enter, .slide-container .slide-leave.slide-leave-active {
+  right: span(8) * -1;
+  transition: all .3s ease-in;
+}
+
+.slide-container .slide-leave, .slide-container .slide-enter.slide-enter-active {
+  right: 0;
+  transition: all .3s ease-in;
+}
+
+// pay
+.pay-details {
+  @include trailer;
+  @include span(4 of 12);
+}
+
+.processing-payment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $active;
+  color: white;
+  text-align: center;
+  z-index: 1;
+  @include padding-leader(3);
+  @include adjust-font-size-to($ms-up2);
+
+  .zeload {
+    top: 7.5em;
+  }
+}
+
+.expiration {
+  float: right;
+  @include padding-leader;
+}
+
+.publish-settings {
+  width: 50%;
+  @include leader(2);
+  @include trailer(2);
+}
+
+.discard-changes {
+  float: right;
+}
+
+.field.remote div.remote, .field.feature div.feature {
+  float: left;
+}
+
+
+.topbar {
+  background: $light-green;
+  @include padding-leader(.5);
+  @include padding-trailer(.5);
+  @include trailer;
+}
+
+.user-info {
+  float: right;
+}
+
+.brand {
+  float: left;
+  font-weight: 900;
+  text-transform: uppercase;
+  a {
+    color: $charcoal;
+  }
+}
+
+.login {
+  @include leader(2);
+}
+
+.pill-nav {
+  @include trailer;
+  @include leader(.35);
+  
+  button, a {
+    // font-size: 100%;
+    background: $inactive;
+    color: charcoal;
+    border: none;
+    margin-right: 1em;
+    padding: .75em 1em;
+    // border-bottom: 3px solid rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.5);
+    cursor: pointer;
+    border-radius: 2em;
+
+    &:hover {
+      color: rgba(0,0,0,0.6);
+    }
+    
+    &.active {
+      background: $active;
+      color: $charcoal;
+      outline: none;
+      &:hover {
+        color: $charcoal;
+      }
+    }
+    
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.email-signup {
+  input[type=email] {
+    width: 100%;
+  }
+  input[type=submit] {
+    margin-top: 2px;
+    // font-size: 80%;
+    background: $inactive;
+    border: $inactive;
+    box-shadow: 0 2px 0px #cfdcd5;
+
+    &:active {
+      position: relative;
+      top: 1px;
+      box-shadow: 0 1px 0px #cfdcd5;
+      outline: none;
+    }
+  }
+}
+
+.mono {
+  font-family: monospace;
+  display: inline-block;
+}
+
+.highlight {
+  background: $inactive;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: rgba(0,0,0,0.2);
+}
+
+.nv-controlsWrap {
+  display: none;
+}
+
+.owner {
+  float: right;
+  margin-right: .5em;
+}
+
+// search form
+.secondary .field.beginner-friendly {
+  label {
+    text-transform: lowercase;
+    margin-left: .15em;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+.warning {
+  color: $red;
+  ul {
+    list-style: disc;
+    margin-left: 1em;
+  }
+}

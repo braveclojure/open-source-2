@@ -16,6 +16,11 @@
                   [medley "0.7.1"]
                   [clj-time "0.11.0"]
                   [cheshire "5.6.2"]
+                  [tentacles "0.5.1"]
+                  [hiccup "1.0.5"]
+                  [me.raynes/cegdown "0.1.1"]
+                  [tentacles "0.5.1"]
+                  [http-kit "2.1.16"]
 
                   ;; client
                   [reagent                     "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]

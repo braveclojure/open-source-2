@@ -1,0 +1,31 @@
+.filter-survivor-enter {
+  opacity: 0.01;
+  .listing {
+    top: -5em;
+    left: -3em;
+    width: 19em;
+  }
+}
+.filter-survivor-enter.filter-survivor-enter-active {
+  opacity: 1;
+  transition: all .2s;
+  .listing {
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
+
+.filter-survivor-leave {
+  opacity: 1;
+}
+
+.filter-survivor-leave-active {
+  opacity: 0.01;
+  transition: all .2s;
+  .listing {
+    top: -5em;
+    left: -3em;
+    width: 19em;
+  }
+}

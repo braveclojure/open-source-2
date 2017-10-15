@@ -1,0 +1,47 @@
+@import "compass-typography";
+@import "_meyer-reset";
+@import "bower_components/susy/sass/susy";
+@import "bower_components/breakpoint-sass/stylesheets/breakpoint";
+
+$paper:      #fff6e5;
+$paper:      #fcfbf7;
+$light-blue: #7ecefc;
+$dark-blue:  #2186c4;
+$charcoal:   #3f464c;
+$salmon:     #ff7f66;
+
+$light-green: #daede2;
+$teal:        #77c4d3;
+$green-blue:  #779fd3;
+$darkish:     #cac9c6;
+$red:         #eb807e;
+
+$shadow: 0px 1px 1px rgba(0,0,0,0.3);
+
+
+/* */
+
+$body-bg:  $paper;
+$active:   $light-blue;
+$inactive: $dark-blue;
+
+$inactive: $light-green;
+$active: $teal;
+$tip: #adaca4;
+
+$hero-bg: #333745;
+
+$hero-bg: #92CDCF;
+$hero-bg: #3E606F;
+$hero-bg: #77C4D3;
+$hero-color: #31353D;
+$hero-color: $charcoal;
+$hero-color: #ECF0F1;
+
+@import "type";
+@import "layout";
+@import "theme";
+@import "tabs";
+@import "markdown-help";
+@import "loading";
+@import "appear";
