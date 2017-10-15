@@ -17,6 +17,7 @@
 (defmethod dispatch-route
   :project-list
   [handler params]
+  (dispatch [:load-projects])
   (dispatch [::strf/load :project-list [pl/component] params]))
 
 (defonce nav

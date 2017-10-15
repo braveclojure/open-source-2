@@ -1,0 +1,14 @@
+(ns open-source.endpoint.project
+  (:require [integrant.core :as ig]
+            [open-source.endpoint.common :as lc]
+            [sweet-tooth.endpoint.utils :as eu]
+            [compojure.core :refer :all]))
+
+(defn decisions
+  [options]
+  {:list {:handle-ok (fn [ctx] {})}})
+
+(def endpoint (lc/endpoint "/api/projects" decisions))
+
+(defmethod ig/init-key :open-source.endpoint/project [_ options]
+  (endpoint options))

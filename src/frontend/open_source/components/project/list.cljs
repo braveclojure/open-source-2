@@ -3,8 +3,9 @@
 
 (defn project-list
   []
-  (into [:div.projects (map (fn [p] [:div.project (:project/name p)])
-                            @(rf/subscribe [:projects]))]))
+  (into [:div.projects]
+        (map (fn [p] [:div.project (:project/name p)])
+             @(rf/subscribe [:projects]))))
 
 (defn component
   []
