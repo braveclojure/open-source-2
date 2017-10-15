@@ -22,4 +22,4 @@
     "music, audio, art, language design, programming language, music programming"}])
 
 (rf/reg-event-db :init
-  (fn [db _] {:data {:projects canned-projects}}))
+  (fn [db _] {:entity {:project canned-projects}}))

@@ -26,7 +26,11 @@
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
 
  :duct.router/cascading
- [#ig/ref :open-source.endpoint/static]
+ [#ig/ref :open-source.endpoint/static
+  #ig/ref :open-source.endpoint/project]
 
  :open-source.endpoint/static
+ {}
+
+ :open-source.endpoint/project
  {}}

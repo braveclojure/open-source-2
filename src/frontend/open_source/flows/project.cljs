@@ -4,7 +4,7 @@
 
 (rf/reg-sub :projects
   (fn [db _]
-    (get-in db [:data :projects])))
+    (get-in db [:entity :project])))
 
 (rf/reg-event-fx :load-projects
   [rf/trim-v]
