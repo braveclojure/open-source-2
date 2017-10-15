@@ -1,3 +1,3 @@
 (ns open-source.routes)
 
-(def routes ["/" :home])
+(def routes ["/" :project-list])

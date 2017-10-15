@@ -6,7 +6,7 @@
             [clojure.string :as str]
 
             [open-source.routes :as routes]
-            [open-source.components.home :as h]
+            [open-source.components.project.list :as pl]
             
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.routes.flow :as strf]
@@ -15,9 +15,9 @@
 (defmulti dispatch-route (fn [handler params] handler))
 
 (defmethod dispatch-route
-  :home
+  :project-list
   [handler params]
-  (dispatch [::strf/load :home [h/component] params]))
+  (dispatch [::strf/load :project-list [pl/component] params]))
 
 (defonce nav
   ;; defonce to prevent this from getting re-configured with

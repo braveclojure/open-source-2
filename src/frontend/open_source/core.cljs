@@ -1,7 +1,8 @@
 (ns open-source.core
   (:require [reagent.core :as r]
-            [re-frame.core :refer [subscribe]]
+            [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [accountant.core :as acc]
+            [open-source.flows]
             [open-source.dispatch]
             [open-source.handlers]
             [open-source.subs]
@@ -21,9 +22,18 @@
 
 (defn app
   []
-  [:div.app @(subscribe [::strf/routed-component])])
+  [:div.app
+   [:div.hero
+    [:div.container
+     [:div.banner
+      [:a {:href "/"} "Open Source Clojure Projects"]]
+     [:div.tagline
+      [:a {:href "/"} "contribute code, live forever*"]]
+     [:div.caveat "*maybe? you won't know until you try"]]]
+   @(subscribe [::strf/routed-component])])
 
 (defn -main []
+  (dispatch-sync [:init])
   (r/render [app] (stcu/el-by-id "app"))
   (acc/dispatch-current!))
 
