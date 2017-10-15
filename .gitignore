@@ -10,3 +10,4 @@ infrastructure/ansible/files/env
 infrastructure/ansible/prod
 certs
 ga-oauth-key*
+logs
