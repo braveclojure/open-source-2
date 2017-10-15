@@ -29,7 +29,7 @@
       [:a {:href "/"} "Open Source Clojure Projects"]]
      [:div.tagline
       [:a {:href "/"} "contribute code, live forever*"]]
-     [:div.caveat "*maybe? you won't know until you try"]]]
+     [:div.caveat "*maybe? you won't know until you try"]]]   
    @(subscribe [::strf/routed-component])])
 
 (defn -main []

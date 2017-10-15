@@ -27,7 +27,9 @@
     {:nav-handler
      (fn [path]
        (let [match (bidi/match-route routes/routes path)]
-         (dispatch-route (:handler match) (merge (:route-params match) (stru/query-params path)))))
+         (dispatch-route (:handler match)
+                         (merge (:route-params match)
+                                (stru/query-params path)))))
      :path-exists?
      (fn [path]
        (boolean (bidi/match-route routes/routes path)))}))

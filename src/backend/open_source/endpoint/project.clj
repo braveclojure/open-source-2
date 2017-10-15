@@ -8,11 +8,10 @@
 (defn decisions
   [options]
   {:list {:handle-ok (fn [ctx]
-                       (let [x (->> @osgh/projects
-                                    (map #(osgh/merge-github-data % {}))
-                                    (eu/ent-type :project)
-                                    lc/format-ent)]
-                         x))}})
+                       (->> @osgh/projects
+                            (map #(osgh/merge-github-data % {}))
+                            (eu/ent-type :project)
+                            lc/format-ent))}})
 
 (def endpoint (lc/endpoint "/api/projects" decisions))
 

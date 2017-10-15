@@ -1,11 +1,13 @@
 (ns open-source.flows.project
   (:require [re-frame.core :as rf]
-            [sweet-tooth.frontend.pagination.flow :as stpf]))
+            [sweet-tooth.frontend.remote.flow :as strf]))
 
 (rf/reg-sub :projects
   (fn [db _]
-    (get-in db [:entity :project])))
+    (let [x (vals (get-in db [:entity :project]))]
+      (pr "projects" x)
+      x)))
 
 (rf/reg-event-fx :load-projects
   [rf/trim-v]
-  (stpf/GET-page-fx "/api/projects" {}))
+  (strf/GET-list-fx "/api/projects"))
