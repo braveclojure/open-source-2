@@ -32,3 +32,11 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 *** list projects
 *** create project
 *** update project
+** cycle
+*** start
+**** DONE read projects from github - api call with oauth
+**** TODO populate local atom
+- use refresh function without making any api calls; make a pure function
+- is it better to push just the get into a function, and then map over result?
+***** TODO write test
+***** TODO separate out the pmap/http get part

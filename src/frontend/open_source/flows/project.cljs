@@ -3,11 +3,11 @@
             [sweet-tooth.frontend.remote.flow :as strf]))
 
 (rf/reg-sub :projects
-  (fn [db _]
-    (let [x (vals (get-in db [:entity :project]))]
-      (pr "projects" x)
-      x)))
+  (fn [db _] (vals (get-in db [:entity :project]))))
 
 (rf/reg-event-fx :load-projects
   [rf/trim-v]
-  (strf/GET-list-fx "/api/projects"))
+  (fn [{:keys [db] :as cofx} args]
+    (if (seq (vals (get-in db [:entity :project])))
+      {}
+      ((strf/GET-list-fx "/api/projects") cofx args))))

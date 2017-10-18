@@ -1,5 +1,5 @@
 (set-env!
-  :source-paths #{"src/backend" "src/frontend" "dev/src"}
+  :source-paths #{"src/backend" "src/frontend" "dev/src" "test/backend"}
   :resource-paths #{"resources" "dev/resources"}
   :dependencies '[[org.clojure/clojure "1.9.0-alpha16"]
                   [org.clojure/clojurescript "1.9.854"]
@@ -19,8 +19,8 @@
                   [tentacles "0.5.1"]
                   [hiccup "1.0.5"]
                   [me.raynes/cegdown "0.1.1"]
-                  [tentacles "0.5.1"]
                   [http-kit "2.1.16"]
+                  [clj-http "3.7.0"]
 
                   ;; client
                   [reagent                     "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]

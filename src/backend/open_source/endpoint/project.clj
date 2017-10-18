@@ -9,7 +9,7 @@
   [options]
   {:list {:handle-ok (fn [ctx]
                        (->> @osgh/projects
-                            (map #(osgh/merge-github-data % {}))
+                            (map #(osgh/add-metadata % {}))
                             (eu/ent-type :project)
                             lc/format-ent))}})
 
