@@ -1,7 +1,7 @@
-{:duct.core/project-ns open-source
+{:duct.core/project-ns  open-source
  :duct.core/environment :production
 
- :duct.module/logging {}
+ :duct.module/logging  {}
  :duct.module.web/site {}
 
  :duct.middleware.web/defaults
@@ -10,11 +10,11 @@
               :multipart  true
               :nested     true}
   :cookies   true
-  :session   {:flash true
+  :session   {:flash        true
               :cookie-attrs {:http-only true}}
-  :security  {:anti-forgery   false
-              :xss-protection {:enable? true, :mode :block}
-              :frame-options  :sameorigin
+  :security  {:anti-forgery         false
+              :xss-protection       {:enable? true, :mode :block}
+              :frame-options        :sameorigin
               :content-type-options :nosniff}
   :static    {:resources ""}
   :responses {:not-modified-responses false
@@ -25,6 +25,11 @@
  :duct.server.http/jetty
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
 
+ :open-source.db/github
+ {:user       #duct/env ["OPEN_SOURCE_GITHUB_PROJECT_USER"]
+  :repo       #duct/env ["OPEN_SOURCE_GITHUB_PROJECT_REPO"]
+  :auth-token #duct/env ["OPEN_SOURCE_GITHUB_OAUTH_TOKEN"]}
+ 
  :duct.router/cascading
  [#ig/ref :open-source.endpoint/static
   #ig/ref :open-source.endpoint/project]
@@ -33,4 +38,4 @@
  {}
 
  :open-source.endpoint/project
- {}}
+ {:db #ig/ref :open-source.db/github}}

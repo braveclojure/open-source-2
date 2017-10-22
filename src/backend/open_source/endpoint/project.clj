@@ -9,7 +9,7 @@
   [options]
   {:list {:handle-ok (fn [ctx]
                        (->> @osgh/projects
-                            (map #(osgh/add-metadata % {}))
+                            osgh/project-list
                             (eu/ent-type :project)
                             lc/format-ent))}})
 

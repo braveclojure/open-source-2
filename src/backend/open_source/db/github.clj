@@ -1,27 +1,11 @@
 (ns open-source.db.github
-  (:require [clojure.string :as str]
+  (:require [integrant.core :as ig]
+            [clojure.string :as str]
             [clojure.set :as set]
             [clj-http.client :as client]
             [clojure.edn :as edn]))
 
-(def projects (atom [{:project/name "Afterglow",
-                      :project/tagline
-                      "Live-coding algorithmic light shows for DMX and other protocols",
-                      :project/repo-url "https://github.com/brunchboy/afterglow",
-                      :project/home-page-url "https://github.com/brunchboy/afterglow",
-                      :project/description
-                      "An environment supporting live coding for the creation of algorithmic light shows in Clojure, leveraging the Open Lighting Architecture with the help of ola-clojure, wayang, beat-link, and pieces of the Overtone toolkit. Beyond building on pieces of Overtone, the entire Afterglow project was inspired by it.",
-                      :record/tags "music, lighting, DMX, MIDI, OSC"}
-                     {:project/name "alda",
-                      :project/tagline "A general purpose music programming language",
-                      :project/repo-url "https://github.com/alda-lang/alda",
-                      :project/home-page-url "http://alda.io",
-                      :project/beginner-issues-label "low-hanging fruit",
-                      :project/description
-                      "Alda is a general purpose music programming language designed to be a flexible and powerful way to create music by writing code. The language is designed with a simple, Markdown-like syntax that can be picked up easily by musicians with little-to-no programming experience. There is support for writing Clojure code inline in an Alda score, allowing Clojure programmers to write algorithms that generate music.\n\nAlda currently allows you to create MIDI music, and there are plans to support a number of other exciting things like:\n\n* building synthesizer instruments via waveform synthesis\n* generating sheet music\n* extending the Alda syntax via a plugin system\n* importing and editing MIDI files\n\nThe project is still relatively young and this is an exciting time to contribute to its development. If you're interested in contributing, feel free to take a look at the open issues on GitHub and pick up any that interest you. You can also stop by our Slack chat group at http://slack.alda.io and say hello!",
-                      :project/beginner-friendly true,
-                      :record/tags
-                      "music, audio, art, language design, programming language, music programming"}]))
+(def projects (atom {}))
 
 (defn slugify
   "Take arbitrary text and format it for readable url"
@@ -38,7 +22,7 @@
 
 (defn slug
   [path]
-  (str/replace #".edn$" ""))
+  (str/replace path #".edn$" ""))
 
 (defn add-metadata
   [project file]
@@ -74,7 +58,7 @@
   [auth-token files]
   (pmap (fn [file]
           (-> (:download_url file)
-              (client/get (api-headers auth-token))
+              client/get
               :body
               edn/read-string
               (add-metadata file)))
@@ -83,7 +67,7 @@
 (defn get-updated-files
   "Finds all project files that have been updated, reads them, adds
   project metadata"
-  [current-projects project-index]
+  [auth-token current-projects project-index]
   (->> project-index
        (filter-updated-files current-projects)
        (read-projects auth-token)))
@@ -101,9 +85,12 @@
   [current-projects user repo auth-token]
   (let [project-index (read-project-index user repo auth-token)]
     (update-projects current-projects
-                     (get-updated-files current-projects project-index)
+                     (get-updated-files auth-token current-projects project-index)
                      (filter-deleted-file-paths current-projects project-index))))
 
+(defn project-list
+  [projects]
+  (vals projects))
 
 ;; ------
 ;; update the project db
@@ -159,9 +146,12 @@
                      (:sha project)
                      (oauth-token)))
 
-(defn write-project!
+#_(defn write-project!
   [projects project]
   (let [path (str "projects/" (slugify (:project/name project)) ".edn")
         result (:content (write-project-to-github project))]
     (swap! projects assoc path (merge-github-data result project))
     @projects))
+
+(defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
+  (swap! projects refresh-projects user repo auth-token))
