@@ -5,8 +5,10 @@
   []
   (into [:div.projects]
         (->> @(rf/subscribe [:projects])
+             vals
              (sort-by :slug)
-             (map (fn [p] [:div.project (:project/name p)])))))
+             (map (fn [p]
+                    [:div.project [:a {:href (str "/project/" (:db/id p)) } (:project/name p)]])))))
 
 (defn component
   []

@@ -43,7 +43,7 @@
                   [integrant/repl "0.2.0" :scope "test"]
 
                   ;; sweet tooth
-                  [sweet-tooth/sweet-tooth-frontend "0.2.5"]
+                  [sweet-tooth/sweet-tooth-frontend "0.2.6"]
                   [sweet-tooth/sweet-tooth-endpoint "0.2.1"]
                   [sweet-tooth/sweet-tooth-workflow "0.2.1"]])
 

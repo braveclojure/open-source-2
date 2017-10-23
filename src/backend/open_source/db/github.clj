@@ -90,7 +90,7 @@
 
 (defn project-list
   [projects]
-  (vals projects))
+  (vals @projects))
 
 ;; ------
 ;; update the project db
@@ -154,4 +154,5 @@
     @projects))
 
 (defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
-  (swap! projects refresh-projects user repo auth-token))
+  (swap! projects refresh-projects user repo auth-token)
+  projects)

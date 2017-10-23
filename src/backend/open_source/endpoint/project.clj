@@ -6,9 +6,9 @@
             [compojure.core :refer :all]))
 
 (defn decisions
-  [options]
+  [{:keys [db]}]
   {:list {:handle-ok (fn [ctx]
-                       (->> @osgh/projects
+                       (->> db
                             osgh/project-list
                             (eu/ent-type :project)
                             lc/format-ent))}})

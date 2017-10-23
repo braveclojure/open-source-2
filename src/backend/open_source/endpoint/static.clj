@@ -8,4 +8,5 @@
 (defmethod ig/init-key :open-source.endpoint/static [_ options]
   (routes (GET "/main.js" [] (resp/resource-response "main.js"))
           ;; load the single page app
-          (GET "/" [] (eu/html-resource "index.html"))))
+          (GET "/" [] (eu/html-resource "index.html"))
+          (GET "/project/*" [] (eu/html-resource "index.html"))))

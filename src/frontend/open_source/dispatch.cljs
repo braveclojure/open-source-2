@@ -4,9 +4,11 @@
             [accountant.core :as acc]
             [bidi.bidi :as bidi]
             [clojure.string :as str]
+            [taoensso.timbre :as timbre]
 
             [open-source.routes :as routes]
             [open-source.components.project.list :as pl]
+            [open-source.components.project.show :as ps]
             
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.routes.flow :as strf]
@@ -19,6 +21,17 @@
   [handler params]
   (dispatch [:load-projects])
   (dispatch [::strf/load :project-list [pl/component] params]))
+
+(defmethod dispatch-route
+  :show-project
+  [handler params]
+  (dispatch [:load-projects])
+  (dispatch [::strf/load :show-project [ps/component] params]))
+
+(defmethod dispatch-route
+  :default
+  [handler params]
+  (timbre/error "No route handler for" handler params))
 
 (defonce nav
   ;; defonce to prevent this from getting re-configured with
