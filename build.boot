@@ -32,6 +32,7 @@
                   [binaryage/devtools          "0.9.4"]
                   [venantius/accountant        "0.2.0"]
                   [bidi                        "2.1.1"]
+                  [cljsjs/marked               "0.3.5-0"]
 
                   ;; duct
                   [duct/core "0.5.0"]
