@@ -8,7 +8,7 @@
              vals
              (sort-by :slug)
              (map (fn [p]
-                    [:div.project [:a {:href (str "/project/" (:db/id p)) } (:project/name p)]])))))
+                    [:div.project [:a {:href (:slug p)} (:project/name p)]])))))
 
 (defn component
   []

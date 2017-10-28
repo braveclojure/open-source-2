@@ -9,4 +9,4 @@
   (routes (GET "/main.js" [] (resp/resource-response "main.js"))
           ;; load the single page app
           (GET "/" [] (eu/html-resource "index.html"))
-          (GET "/project/*" [] (eu/html-resource "index.html"))))
+          (GET "/projects/*" [] (eu/html-resource "index.html"))))

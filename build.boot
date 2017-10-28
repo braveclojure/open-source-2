@@ -46,7 +46,10 @@
                   ;; sweet tooth
                   [sweet-tooth/sweet-tooth-frontend "0.2.6"]
                   [sweet-tooth/sweet-tooth-endpoint "0.2.1"]
-                  [sweet-tooth/sweet-tooth-workflow "0.2.1"]])
+                  [sweet-tooth/sweet-tooth-workflow "0.2.3"]])
+
+
+
 
 (require '[boot.core]
          '[adzerk.boot-cljs :refer [cljs]]

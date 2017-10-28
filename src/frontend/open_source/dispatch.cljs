@@ -9,6 +9,7 @@
             [open-source.routes :as routes]
             [open-source.components.project.list :as pl]
             [open-source.components.project.show :as ps]
+            [open-source.components.project.edit :as pe]
             
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.routes.flow :as strf]
@@ -27,6 +28,12 @@
   [handler params]
   (dispatch [:load-projects])
   (dispatch [::strf/load :show-project [ps/component] params]))
+
+(defmethod dispatch-route
+  :edit-project
+  [handler params]
+  (dispatch [:load-projects])
+  (dispatch [::strf/load :edit-project [pe/component] params]))
 
 (defmethod dispatch-route
   :default

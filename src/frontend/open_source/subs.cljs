@@ -8,5 +8,3 @@
 
 ;; re-frame docs say this is a bad idea
 ;; well, my middle name is a bad idea
-(reg-sub :key
-  (fn [db [_ path]] (get-in db path)))
