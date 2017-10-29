@@ -21,7 +21,7 @@
     ;; use etags or last modified you silly goose
     (if-not (empty? (get-in db [:entity :project]))
       {}
-      ((strf/GET-list-fx "/api/projects") cofx args))))
+      ((strf/GET-list-fx "/api/project") cofx args))))
 
 ;; Editing a project
 
@@ -49,4 +49,4 @@
     ;; use etags or last modified you silly goose
     (if-not (empty? (get-in db [:entity :project]))
       {:db (copy-project-for-edit db)}
-      ((strf/GET-list-fx "/api/projects" {:on-success [:edit-project-load-success (project-id db)]}) cofx args))))
+      ((strf/GET-list-fx "/api/project" {:on-success [:edit-project-load-success (project-id db)]}) cofx args))))

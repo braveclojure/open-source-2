@@ -7,7 +7,7 @@
             [sweet-tooth.frontend.remote.flow :as strf]
             [sweet-tooth.frontend.pagination.flow :as stpf]))
 
-(defmethod stff/url-prefix :default [_ _] "/api/v1")
+(defmethod stff/url-prefix :default [_ _] "/api")
 (defmethod stff/data-id :default [_ _ data] (:db/id data))
 
 ;; initialize the handler with no interceptors

@@ -139,19 +139,16 @@
   [project user repo auth-token]
   ;; TODO update this
   #_(r/update-contents user
-                     repo
-                     (str "projects/" (slugify (:project/name project)) ".edn")
-                     "updating project via web"
-                     (project-file-body project)
-                     (:sha project)
-                     (oauth-token)))
+                       repo
+                       (str "projects/" (slugify (:project/name project)) ".edn")
+                       "updating project via web"
+                       (project-file-body project)
+                       (:sha project)
+                       (oauth-token)))
 
-#_(defn write-project!
+(defn write-project!
   [projects project]
-  (let [path (str "projects/" (slugify (:project/name project)) ".edn")
-        result (:content (write-project-to-github project))]
-    (swap! projects assoc path (merge-github-data result project))
-    @projects))
+  (swap! projects assoc (:db/id project) project))
 
 (defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
   (swap! projects refresh-projects user repo auth-token)
