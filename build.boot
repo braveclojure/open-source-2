@@ -22,6 +22,9 @@
                   [http-kit "2.1.16"]
                   [clj-http "3.7.0"]
 
+                  ;; TODO fix the fact that this is needed
+                  [com.datomic/datomic-free "0.9.5344" :exclusions [com.google.guava/guava]]
+
                   ;; client
                   [reagent                     "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                   [cljsjs/react-dom            "15.6.1-0" :exclusions [cljsjs/react]]
@@ -41,15 +44,17 @@
                   [integrant "0.4.1"]
 
                   ;; local dev
-                  [integrant/repl "0.2.0" :scope "test"]
+                  [integrant/repl "0.2.0" :scope "test"]])
 
-                  ;; sweet tooth
-                  [sweet-tooth/sweet-tooth-frontend "0.2.6"]
-                  [sweet-tooth/sweet-tooth-endpoint "0.2.1"]
-                  [sweet-tooth/sweet-tooth-workflow "0.2.3"]])
+(def sweet-tooth-packages
+  "Define this seperately so packages can get included as checkouts"
+  '[[sweet-tooth/sweet-tooth-frontend "0.2.7-SNAPSHOT"]
+    [sweet-tooth/sweet-tooth-endpoint "0.2.2"]
+    [sweet-tooth/sweet-tooth-workflow "0.2.4"]])
 
-
-
+(set-env! :dependencies #(into % sweet-tooth-packages)
+          ;; for dev
+          :checkouts sweet-tooth-packages)
 
 (require '[boot.core]
          '[adzerk.boot-cljs :refer [cljs]]

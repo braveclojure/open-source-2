@@ -32,7 +32,7 @@
 (defmethod dispatch-route
   :edit-project
   [handler params]
-  (dispatch [:load-projects])
+  (dispatch [:edit-project])
   (dispatch [::strf/load :edit-project [pe/component] params]))
 
 (defmethod dispatch-route
