@@ -25,6 +25,8 @@
  :duct.server.http/jetty
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
 
+ :sweet-tooth.endpoint/middleware {}
+
  :open-source.db/github
  {:user       #duct/env ["OPEN_SOURCE_GITHUB_PROJECT_USER"]
   :repo       #duct/env ["OPEN_SOURCE_GITHUB_PROJECT_REPO"]
