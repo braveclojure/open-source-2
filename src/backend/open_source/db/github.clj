@@ -3,7 +3,8 @@
             [clojure.string :as str]
             [clojure.set :as set]
             [clj-http.client :as client]
-            [clojure.edn :as edn]))
+            [clojure.edn :as edn]
+            [cheshire.core :as json]))
 
 (def projects (atom {}))
 
@@ -88,10 +89,6 @@
                      (get-updated-files auth-token current-projects project-index)
                      (filter-deleted-file-paths current-projects project-index))))
 
-(defn project-list
-  [projects]
-  (vals @projects))
-
 ;; ------
 ;; update the project db
 ;; ------
@@ -110,7 +107,9 @@
 
 (def template
   "Sorted map that ensures keys get printed in correct order"
-  (sorted-map-by (fn [x y] (< (.indexOf project-keys x) (.indexOf project-keys y)))))
+  (sorted-map-by (fn [x y]
+                   (< (.indexOf project-keys x)
+                      (.indexOf project-keys y)))))
 
 (defn add-http
   [url]
@@ -128,28 +127,48 @@
 
 (defn project-file-body
   [project]
-  (with-out-str
-    (as-> project $
-      (select-keys $ project-keys)
-      (ensure-http $ [:project/repo-url :project/home-page-url])
-      (into template $)
-      (clojure.pprint/pprint $))))
+  (binding [clojure.core/*print-namespace-maps* false]
+    (with-out-str
+      (as-> project $
+        (select-keys $ project-keys)
+        (ensure-http $ [:project/repo-url :project/home-page-url])
+        (into template $)
+        (clojure.pprint/pprint $)))))
+
+(defn encode64
+  [s]
+  (.encodeToString (java.util.Base64/getEncoder)
+                   (.getBytes s)))
+
+(defn github-project-params
+  [{:keys [:project/name :sha] :as project}]
+  (cond-> {:message (str "updating " name " via web")
+           :content (encode64 (project-file-body project))}
+    sha (assoc :sha sha)))
 
 (defn write-project-to-github
   [project user repo auth-token]
-  ;; TODO update this
-  #_(r/update-contents user
-                       repo
-                       (str "projects/" (slugify (:project/name project)) ".edn")
-                       "updating project via web"
-                       (project-file-body project)
-                       (:sha project)
-                       (oauth-token)))
+  (client/put (format "https://api.github.com/repos/%s/%s/contents/projects/%s" user repo (str (id project) ".edn"))
+              (merge (api-headers auth-token)
+                     {:body (json/generate-string (github-project-params project))})))
 
-(defn write-project!
-  [projects project]
-  (swap! projects assoc (:db/id project) project))
+(defprotocol GithubProjectDb
+  "Interact with Project"
+  (refresh-projects! [project-db])
+  (write-project! [project-db project])
+  (project-list [project-db]))
+
+(defrecord ProjectDb [project-atom user repo auth-token]
+  GithubProjectDb
+  (refresh-projects! [_]
+    (swap! project-atom refresh-projects user repo auth-token))
+  (write-project! [_ project]
+    (write-project-to-github project user repo auth-token)
+    (swap! project-atom assoc (:db/id project) project))
+  (project-list [_]
+    (vals @project-atom)))
 
 (defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
-  (swap! projects refresh-projects user repo auth-token)
-  projects)
+  (let [project-db (map->ProjectDb (assoc github-config :project-atom projects))]
+    (refresh-projects! project-db)
+    project-db))

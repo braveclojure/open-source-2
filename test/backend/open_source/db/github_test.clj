@@ -23,4 +23,19 @@
          [{:path "projects/alda.edn"
            :sha "y"}])))
 
+(deftest github-project-params
+  (is (= (gh/github-project-params {:project/name "alda"
+                                    :sha "x"})
+         {:message "updating alda via web",
+          :content "ezpwcm9qZWN0L25hbWUgImFsZGEiLAogOnByb2plY3QvcmVwby11cmwgbmlsLAogOnByb2plY3QvaG9tZS1wYWdlLXVybCBuaWx9Cg=="
+          :sha "x"}))
+  (is (= (gh/github-project-params {:project/name "alda"})
+         {:message "updating alda via web",
+          :content "ezpwcm9qZWN0L25hbWUgImFsZGEiLAogOnByb2plY3QvcmVwby11cmwgbmlsLAogOnByb2plY3QvaG9tZS1wYWdlLXVybCBuaWx9Cg=="})))
 
+(deftest project-file-body
+  (is (= (gh/project-file-body {:project/name "project"})
+         "{:project/name \"project\",
+ :project/repo-url nil,
+ :project/home-page-url nil}
+")))
