@@ -3,7 +3,7 @@
 ** deployment
 * features
 ** table home page
-** ensure that delete works
+** DONE ensure that delete works
 ** some kind of delete / flag voting?
 ** repos/get
 https://developer.github.com/v3/repos/#get
@@ -19,24 +19,39 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 
 * breakdown
 ** frontend
-*** get request for list of projects
+*** DONE get request for list of projects
 **** stub with pre-popped map of projects
-*** show list of projects
-*** navigate to single project
-*** edit project
+*** DONE show list of projects
+*** DONE navigate to single project
+*** DONE edit project
 *** create project
 ** backend
-*** start/stop a watcher
+*** DONE start/stop a watcher
 **** add to config.edn
 **** create multimethods
-*** list projects
+*** DONE list projects
 *** create project
-*** update project
+*** DONE update project
 ** cycle
 *** start
 **** DONE read projects from github - api call with oauth
-**** TODO populate local atom
+**** DONE populate local atom
 - use refresh function without making any api calls; make a pure function
 - is it better to push just the get into a function, and then map over result?
 ***** TODO write test
 ***** TODO separate out the pmap/http get part
+** TODO create project
+*** endpoint
+*** form
+** TODO update list view
+*** copy over text search
+*** limit tags?
+*** extra meta
+**** repos/get
+***** stargazers_count
+***** pushed_at
+**** number of contributors
+https://developer.github.com/v3/repos/statistics/#get-contributors-list-with-additions-deletions-and-commit-counts
+**** participation (weekly commit count)
+https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-for-the-repository-owner-and-everyone-else
+** TODO remove garbage data
