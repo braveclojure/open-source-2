@@ -13,12 +13,16 @@
          (eu/ent-type :project)
          lc/format-ent)))
 
+(defn write-project
+  [db]
+  (fn [ctx] (osgh/write-project! db (eu/params ctx))))
+
 (defn decisions
   [{:keys [db]}]
   {:list   {:handle-ok (list-projects db)}
-   :update {:put! (fn [ctx] (osgh/write-project! db (eu/params ctx)))
+   :update {:put! (write-project db)
             :handle-ok (list-projects db)}
-   :create {:post! (fn [ctx] (osgh/write-project! db (eu/params ctx)))
+   :create {:post! (write-project db)
             :handle-created (list-projects db)}})
 
 (def endpoint (lc/endpoint "/api/project" decisions))

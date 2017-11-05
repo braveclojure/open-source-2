@@ -20,7 +20,7 @@
       [:div.listing-form.clearfix
        [:div.form
         [:h2 "Details"]
-        [:form (stfc/on-submit form-path)
+        [:form (stfc/on-submit form-path {:success :created-project})
          [:div
           
           [:div.section.clearfix

@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [sweet-tooth.frontend.remote.flow :as strf]
             [sweet-tooth.frontend.routes.flow :as strof]
+            [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.core.utils :as u]
             [sweet-tooth.frontend.paths :as p]))
 
@@ -24,7 +25,6 @@
       ((strf/GET-list-fx "/api/project") cofx args))))
 
 ;; Editing a project
-
 (defn project-id
   [db]
   (get-in db [p/nav-prefix :params :project-id]))
@@ -50,3 +50,12 @@
     (if-not (empty? (get-in db [:entity :project]))
       {:db (copy-project-for-edit db)}
       ((strf/GET-list-fx "/api/project" {:on-success [:edit-project-load-success (project-id db)]}) cofx args))))
+
+
+;; Create a project
+
+(rf/reg-event-fx :created-project
+  [rf/trim-v]
+  (fn [{:keys [db]} args]
+    {:db  (stff/submit-form-success db args)
+     :nav "/"}))

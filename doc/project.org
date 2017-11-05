@@ -43,6 +43,7 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ** TODO create project
 *** endpoint
 *** form
+*** post-create
 ** TODO update list view
 *** copy over text search
 *** limit tags?
