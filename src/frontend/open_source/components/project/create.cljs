@@ -7,6 +7,7 @@
   []
   [:div.container
    [:div.edit-listing
+    [:div.view-all [:a {:href "/"} "← view all open source projects"]]
     [:div.title [:h1 "Post an Open Source Project"]]
     [:div.wizard
      [:div.spiff.inset

@@ -52,7 +52,8 @@ body {
 
 .field {
   @include trailer;
-  label span:last-child {
+  label {
+    display: inline-block;
     margin-right: .5em;
   }
 }
@@ -637,7 +638,7 @@ h2 {
 
 .listing-form {
   .form {
-    width: 100%;
+    @include span(8 of 12);
     
     input[type=text], textarea, p {
       width: 100%;
@@ -651,7 +652,7 @@ h2 {
   .section {
     
     .field {
-      @include span(7 of 12);
+      
       transition: all .4s;
       clear: both;
       
@@ -850,8 +851,9 @@ hr {
   }
 }
 
-.warning {
+.instructions {
   color: $red;
+  @include span(4 of 12 at 9);
   ul {
     list-style: disc;
     margin-left: 1em;

@@ -5,10 +5,12 @@
 
 (defn component
   []
-  [:div.container
-   [:div.edit-listing
-    [:div.title [:h1 "Edit Project"]]
-    (let [project @(rf/subscribe [:current-project])]
+  (let [project @(rf/subscribe [:current-project])]
+    [:div.container
+     [:div.edit-listing
+      [:div.view-all
+       [:a {:href (str "/" (:slug project))} (str "← " (:project/name project))]]
+      [:div.title [:h1 "Edit Project"]]
       [:div.wizard
        [:div.spiff.inset
-        (when project [pf/form (:db/id project)])]])]])
+        (when project [pf/form (:db/id project)])]]]]))

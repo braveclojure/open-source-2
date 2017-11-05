@@ -22,15 +22,7 @@
         [:h2 "Details"]
         [:form (stfc/on-submit form-path)
          [:div
-          [:div.section
-           [:div.field
-            [:div.warning
-             [:p "Please provide clear instructions for the following in the description or in a link:"]
-             [:ul
-              [:li "Developing the project locally"]
-              [:li "Running tests if there are tests"]
-              [:li "Contributing code (pull request? tests required?)"]
-              [:li "Contacting other devs - slack, mailing list, IRC, etc"]]]]]
+          
           [:div.section.clearfix
            [input :text :project/name
             :required true
@@ -69,4 +61,11 @@
             :tip [:span "What your project does and instructions on how people can get involved."]]]
           [:div.field
            [:input {:type "submit" :value (submit-text project-id)}]
-           [stfc/progress-indicator form-state]]]]]])))
+           [stfc/progress-indicator form-state]]]]]
+       [:div.instructions.secondary
+        [:p "Please provide clear instructions for the following in the description or in a link:"]
+        [:ul
+         [:li "Developing the project locally"]
+         [:li "Running tests if there are tests"]
+         [:li "Contributing code (pull request? tests required?)"]
+         [:li "Contacting other devs - slack, mailing list, IRC, etc"]]]])))

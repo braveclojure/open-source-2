@@ -17,7 +17,9 @@
   [{:keys [db]}]
   {:list   {:handle-ok (list-projects db)}
    :update {:put! (fn [ctx] (osgh/write-project! db (eu/params ctx)))
-            :handle-ok (list-projects db)}})
+            :handle-ok (list-projects db)}
+   :create {:post! (fn [ctx] (osgh/write-project! db (eu/params ctx)))
+            :handle-created (list-projects db)}})
 
 (def endpoint (lc/endpoint "/api/project" decisions))
 
