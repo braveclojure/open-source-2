@@ -4,9 +4,31 @@
             [clojure.set :as set]
             [clj-http.client :as client]
             [clojure.edn :as edn]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [taoensso.timbre :as timbre]))
 
 (def projects (atom {}))
+
+(defn auth-headers
+  [auth-token]
+  {:headers {"Authorization" (str "token " auth-token)}})
+
+(defn api-headers
+  "Common configuration for interacting with the Github API"
+  [auth-token]
+  (merge {:as :json}
+         (auth-headers auth-token)))
+
+(defn github-url
+  [user repo endpoint]
+  (format "https://api.github.com/repos/%s/%s%s" user repo endpoint))
+
+(defn github-api-get
+  [user repo endpoint auth-token]
+  (try (:body (client/get (github-url user repo endpoint)
+                          (api-headers auth-token)))
+       (catch Exception e
+         (timbre/error "Exception getting from API" user repo endpoint (.getMessage e)))))
 
 (defn slugify
   "Take arbitrary text and format it for readable url"
@@ -26,16 +48,22 @@
   (str/replace path #".edn$" ""))
 
 (defn add-metadata
+  "Derive some values from the base data in a project file"
   [project file]
   (merge project
          (select-keys file [:sha :path])
          {:slug  (-> file :path slug)
           :db/id (id project)}))
 
-(defn api-headers
-  [auth-token]
-  {:as :json
-   :headers {"Authorization" (str "token " auth-token)}})
+(defn read-project-stats
+  "If the project's on github, use the API to read useful stats that
+  indicate activity and popularity"
+  [project auth-token]
+  (if-let [[_ user repo] (re-find #"https?://github.com/([^/]+)/([^/]+)/?$" (:project/repo-url project))]
+    (let [stats (github-api-get user repo "" auth-token)]
+      (assoc project :project/stats {:stargazers-count (:stargazers_count stats)
+                                     :pushed-at        (:pushed_at stats)}))
+    project))
 
 (defn filter-updated-files
   "All github files whose sha doesn't match the corresponding project"
@@ -52,17 +80,20 @@
 
 (defn read-project-index
   [user repo auth-token]
-  (:body (client/get (format "https://api.github.com/repos/%s/%s/contents/projects" user repo)
-                     (api-headers auth-token))))
+  (github-api-get user repo "/contents/projects" auth-token))
 
 (defn read-projects
+  "Download project files"
   [auth-token files]
   (pmap (fn [file]
-          (-> (:download_url file)
-              client/get
-              :body
-              edn/read-string
-              (add-metadata file)))
+          (try (-> (:download_url file)
+                   (client/get (auth-headers auth-token))
+                   :body
+                   edn/read-string
+                   (add-metadata file)
+                   (read-project-stats auth-token))
+               (catch Exception e
+                 (timbre/error "Exception getting from API" (:download_url file)  (.getMessage e)))))
         files))
 
 (defn get-updated-files
@@ -148,7 +179,7 @@
 
 (defn write-project-to-github
   [project user repo auth-token]
-  (client/put (format "https://api.github.com/repos/%s/%s/contents/projects/%s" user repo (str (id project) ".edn"))
+  (client/put (github-url user repo (str "/contents/projects/" (str (id project) ".edn")))
               (merge (api-headers auth-token)
                      {:body (json/generate-string (github-project-params project))})))
 
@@ -166,7 +197,7 @@
     (write-project-to-github project user repo auth-token)
     (swap! project-atom assoc (:db/id project) project))
   (project-list [_]
-    (vals @project-atom)))
+    (or (vals @project-atom) [])))
 
 (defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
   (let [project-db (map->ProjectDb (assoc github-config :project-atom projects))]

@@ -41,14 +41,16 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ***** TODO write test
 ***** TODO separate out the pmap/http get part
 ** TODO create project
-*** endpoint
-*** form
-*** post-create
+*** DONE endpoint
+*** DONE form
+*** DONE post-create
+*** TODO value returned is incorrect
 ** TODO update list view
 *** copy over text search
 *** limit tags?
 *** extra meta
 **** repos/get
+GET /repos/:owner/:repo
 ***** stargazers_count
 ***** pushed_at
 **** number of contributors
@@ -56,3 +58,4 @@ https://developer.github.com/v3/repos/statistics/#get-contributors-list-with-add
 **** participation (weekly commit count)
 https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-for-the-repository-owner-and-everyone-else
 ** TODO remove garbage data
+** TODO how to limit what gets refreshed with each reload?

@@ -61,6 +61,7 @@
          '[adzerk.boot-reload :refer [reload]]
          '[sweet-tooth.workflow.tasks :refer [dev reload-integrant] :as tasks]
          '[integrant.repl :as ir]
+         '[integrant.repl.state :as irs]
          '[dev])
 
 (task-options!
