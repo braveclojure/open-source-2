@@ -6,12 +6,27 @@
 
 (defn project-list
   []
-  (into [:div.projects]
-        (->> @(rf/subscribe [:projects])
-             vals
-             (sort-by :slug)
-             (map (fn [p]
-                    [:div.project [:a {:href (:slug p)} (:project/name p) ]])))))
+  [:table.projects
+   [:tbody
+    (->> @(rf/subscribe [:projects])
+         vals
+         (sort-by :slug)
+         (map (fn [{:keys [project/stats] :as p}]
+                ^{:key (str "os-project-" (:slug p))}
+                [:tr.project
+                 [:td
+                  [:a.project-main {:href (:slug p)}
+                   [:span.name (:project/name p)]
+                   [:span.tagline (:project/tagline p)]]]
+                 [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
+                 [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
+                 [:td.stargazers
+                  (when stats
+                    [:span.stargazers [:i.fa.fa-star] (:stargazers-count stats)])]
+                 [:td.stargazers
+                  (when stats
+                    [:span.last-pushed [:i.fa.fa-clock-o]
+                     (:days-since-push stats)])]])))]])
 
 (defn component
   []

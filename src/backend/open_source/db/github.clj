@@ -5,6 +5,9 @@
             [clj-http.client :as client]
             [clojure.edn :as edn]
             [cheshire.core :as json]
+            [clj-time.core :as t]
+            [clj-time.format :as tf]
+            [clj-time.local :as tl]
             [taoensso.timbre :as timbre]))
 
 (def projects (atom {}))
@@ -29,6 +32,17 @@
                           (api-headers auth-token)))
        (catch Exception e
          (timbre/error "Exception getting from API" user repo endpoint (.getMessage e)))))
+
+(defn format-time
+  [t]
+  (tf/parse (tf/formatters :date-time-no-ms) t))
+
+(defn days-old
+  [t]
+  (-> t
+      format-time
+      (t/interval (clj-time.local/local-now))
+      t/in-days))
 
 (defn slugify
   "Take arbitrary text and format it for readable url"
@@ -62,7 +76,8 @@
   (if-let [[_ user repo] (re-find #"https?://github.com/([^/]+)/([^/]+)/?$" (:project/repo-url project))]
     (let [stats (github-api-get user repo "" auth-token)]
       (assoc project :project/stats {:stargazers-count (:stargazers_count stats)
-                                     :pushed-at        (:pushed_at stats)}))
+                                     :pushed-at        (:pushed_at stats)
+                                     :days-since-push  (days-old (:pushed_at stats))}))
     project))
 
 (defn filter-updated-files

@@ -14,7 +14,7 @@
                   [com.flyingmachine/webutils "0.1.6"]
                   [compojure "1.5.0"]
                   [medley "0.7.1"]
-                  [clj-time "0.11.0"]
+                  [clj-time "0.14.0"]
                   [cheshire "5.6.2"]
                   [tentacles "0.5.1"]
                   [hiccup "1.0.5"]

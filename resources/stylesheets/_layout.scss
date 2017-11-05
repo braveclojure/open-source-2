@@ -859,3 +859,47 @@ hr {
     margin-left: 1em;
   }
 }
+
+.projects {
+  @include trailer(4);
+  th {
+    text-align: left;
+  }
+  .project {
+    background: white;
+    border-bottom: 1px solid #eee;
+    .name {
+      // display: inline-block;
+      margin-right: .5em;
+      font-weight: bold;
+    }
+    .tagline {
+      color: #999;
+    }
+    td {
+      color: #777;
+      padding: 0 0 0 .75em;
+      @include padding-leader(.5);
+      @include padding-trailer(.5);
+      &:last-child {
+        padding-right: .75em;
+      }
+      &:first-child {
+        padding: 0;
+      }
+    }
+  }
+  .project-main {
+    display: block;
+    padding: 0 .75em;
+    @include padding-leader(.5);
+    @include padding-trailer(.5);
+  }
+  .fa-star, .fa-clock-o {
+    margin-right: .25em;
+    font-size: 85%;
+  }
+  .stargazers {
+    white-space: nowrap;
+  }
+}
