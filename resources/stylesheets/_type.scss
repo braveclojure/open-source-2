@@ -132,7 +132,7 @@ h3 {
 
 th {
   // font-weight: bold;
-  @include adjust-font-size-to(12px);
+  // @include adjust-font-size-to(12px);
   font-family: $sans-family;
 }
 

@@ -876,25 +876,27 @@ hr {
     .tagline {
       color: #999;
     }
-    td {
-      color: #777;
-      padding: 0 0 0 .75em;
-      @include padding-leader(.5);
-      @include padding-trailer(.5);
-      &:last-child {
-        padding-right: .75em;
-      }
-      &:first-child {
-        padding: 0;
-      }
-    }
   }
-  .project-main {
-    display: block;
-    padding: 0 .75em;
+
+  td,th {
+    color: #777;
+    padding: 0 0 0 .75em;
     @include padding-leader(.5);
     @include padding-trailer(.5);
+    &:last-child {
+      padding-right: .75em;
+    }
   }
+
+  
+
+  .project-main {
+    display: block;
+    &:hover .tagline {
+      color: $teal;
+    }
+  }
+
   .fa-star, .fa-clock-o {
     margin-right: .25em;
     font-size: 85%;

@@ -4,29 +4,58 @@
             [open-source.components.ui :as ui]
             [open-source.utils :as u]))
 
+(defn filter-tag
+  [tags tag]
+  [:span.tag-container
+   [:span.tag {:class (if (get tags tag) "active")
+               :data-prevent-nav true
+               :on-click #(do (.stopPropagation %)
+                              (.preventDefault %)
+                              (rf/dispatch [:toggle-tag tag]))} tag]])
+
+(defn project
+  [{:keys [project/stats] :as p}]
+  (let [selected-tags {}]
+    [:tr.project
+     [:td
+      [:a.project-main {:href (:slug p)}
+       [:span.name (:project/name p)]
+       [:span.tagline (:project/tagline p)]]
+      (if (:project/beginner-friendly p)
+        [:div.beginner-friendly "beginner friendly"])
+      (if-let [t (:record/tags p)]
+        [:div.tags
+         (for [tag (u/split-tags t)]
+           ^{:key (gensym)} [filter-tag selected-tags tag])])]
+     [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
+     [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
+     [:td.stargazers
+      (when stats
+        [:span.stargazers [:i.fa.fa-star] (:stargazers-count stats)])]
+     [:td.stargazers
+      (when stats
+        [:span.last-pushed
+         {:title "days since last push"}
+         [:i.fa.fa-clock-o]
+         (:days-since-push stats)])]]))
+
+
 (defn project-list
   []
   [:table.projects
+   [:thead
+    [:tr
+     [:th "project"]
+     [:th] [:th]
+     [:th [:i.fa.fa-star]]
+     [:th [:i.fa.fa-clock-o]]]]
    [:tbody
     (->> @(rf/subscribe [:projects])
          vals
          (sort-by :slug)
-         (map (fn [{:keys [project/stats] :as p}]
+         (map (fn [p]
                 ^{:key (str "os-project-" (:slug p))}
-                [:tr.project
-                 [:td
-                  [:a.project-main {:href (:slug p)}
-                   [:span.name (:project/name p)]
-                   [:span.tagline (:project/tagline p)]]]
-                 [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
-                 [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
-                 [:td.stargazers
-                  (when stats
-                    [:span.stargazers [:i.fa.fa-star] (:stargazers-count stats)])]
-                 [:td.stargazers
-                  (when stats
-                    [:span.last-pushed [:i.fa.fa-clock-o]
-                     (:days-since-push stats)])]])))]])
+                [project p])))]])
 
 (defn component
   []
@@ -38,15 +67,6 @@
      [:a {:href "/projects/new"} "Post Your Project"]]]
    [:div.main.listings.public
     [project-list]]])
-
-(defn filter-tag
-  [tags tag]
-  [:span.tag-container
-   [:span.tag {:class (if (get tags tag) "active")
-               :data-prevent-nav true
-               :on-click #(do (.stopPropagation %)
-                              (.preventDefault %)
-                              (rf/dispatch [:toggle-tag tag]))} tag]])
 
 (defn view
   []
