@@ -876,6 +876,15 @@ hr {
     .tagline {
       color: #999;
     }
+
+    &.beginner-friendly td:first-child {
+      //border-left: .25em solid $teal;
+    }
+  }
+
+  div.beginner-friendly {
+    color: $teal;
+    @include adjust-font-size-to($ms-down1);
   }
 
   td,th {
@@ -888,12 +897,20 @@ hr {
     }
   }
 
-  
+  .tags {
+    @include trailer(.25);
+  }
 
   .project-main {
     display: block;
-    &:hover .tagline {
-      color: $teal;
+    margin-left: -.75em;
+    padding-left: .75em;
+    
+    &:hover {
+      background: #fafafa;
+      .tagline {
+        color: $teal;
+      }
     }
   }
 

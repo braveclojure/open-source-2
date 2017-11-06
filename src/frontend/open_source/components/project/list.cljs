@@ -14,9 +14,10 @@
                               (rf/dispatch [:toggle-tag tag]))} tag]])
 
 (defn project
-  [{:keys [project/stats] :as p}]
+  [{:keys [project/stats project/beginner-friendly] :as p}]
   (let [selected-tags {}]
     [:tr.project
+     {:class (if beginner-friendly "beginner-friendly")}
      [:td
       [:a.project-main {:href (:slug p)}
        [:span.name (:project/name p)]
