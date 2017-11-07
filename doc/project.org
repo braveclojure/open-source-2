@@ -60,3 +60,4 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ** TODO remove garbage data
 ** TODO how to limit what gets refreshed with each reload?
 ** TODO periodically refresh stats
+** TODO create a "tags" file that lists allowable tags
