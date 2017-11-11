@@ -67,4 +67,5 @@
 (stfilterf/reg-filtered-sub :filtered-projects
                             :projects
                             filter-form-path
-                            [[:query stfilterf/filter-query]])
+                            [[:project/beginner-friendly stfilterf/filter-toggle]
+                             [:query stfilterf/filter-query]])

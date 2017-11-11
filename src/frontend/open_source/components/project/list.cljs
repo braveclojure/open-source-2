@@ -41,7 +41,6 @@
          [:i.fa.fa-clock-o]
          (:days-since-push stats)])]]))
 
-
 (defn project-list
   []
   [:div.main.listings.public
