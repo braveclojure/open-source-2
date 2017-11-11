@@ -2,7 +2,8 @@
   (:require [re-frame.core :as rf]
             [sweet-tooth.frontend.form.components :as stfc]
             [open-source.components.ui :as ui]
-            [open-source.utils :as u]))
+            [open-source.utils :as u]
+            [open-source.flows.project :as project-flow]))
 
 (defn filter-tag
   [tags tag]
@@ -52,8 +53,7 @@
       [:th [:i.fa.fa-star]]
       [:th [:i.fa.fa-clock-o]]]]
     [:tbody
-     (->> @(rf/subscribe [:projects])
-          vals
+     (->> @(rf/subscribe [:filtered-projects])
           (sort-by :slug)
           (map (fn [p]
                  ^{:key (str "os-project-" (:slug p))}
@@ -61,7 +61,7 @@
 
 (defn sidebar
   []
-  (let [{:keys [input]} (stfc/form [:projects :search])
+  (let [{:keys [input]} (stfc/form project-flow/filter-form-path)
         selected-tags []
         tags []]
     [:div.secondary.listings

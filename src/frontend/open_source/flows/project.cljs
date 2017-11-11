@@ -2,12 +2,13 @@
   (:require [re-frame.core :as rf]
             [sweet-tooth.frontend.remote.flow :as strf]
             [sweet-tooth.frontend.routes.flow :as strof]
+            [sweet-tooth.frontend.filter.flow :as stfilterf]
             [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.core.utils :as u]
             [sweet-tooth.frontend.paths :as p]))
 
 (rf/reg-sub :projects
-  (fn [db _] (get-in db [:entity :project])))
+  (fn [db _] (vals (get-in db [:entity :project]))))
 
 (rf/reg-sub :current-project
   :<- [:projects]
@@ -59,3 +60,11 @@
   (fn [{:keys [db]} args]
     {:db  (stff/submit-form-success db args)
      :nav "/"}))
+
+;; Filter projects
+(def filter-form-path [:projects :filter])
+
+(stfilterf/reg-filtered-sub :filtered-projects
+                            :projects
+                            filter-form-path
+                            [[:query stfilterf/filter-query]])
