@@ -24,7 +24,7 @@
      [:span.tagline (:project/tagline p)]]
     (if (:project/beginner-friendly p)
       [:div.beginner-friendly [:i.fa.fa-check] " beginner friendly"])
-    (if-let [t (:record/split-tags p)]
+    (if-let [t (sort (:record/split-tags p))]
       [:div.tags
        (for [tag t]
          ^{:key (gensym)} [filter-tag selected-tags tag])])]
@@ -64,7 +64,7 @@
 (defn filter-tags
   [tag-source]
   (let [selected-tags (:selected-tags @tag-source)
-        tags          @(rf/subscribe [::project-flow/tags])]
+        tags          (sort @(rf/subscribe [::project-flow/tags]))]
     [:div.section.tags
      [:div
       (for [tag tags]

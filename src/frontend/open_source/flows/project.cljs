@@ -13,7 +13,10 @@
 (rf/reg-sub ::projects
   (fn [db _] (->> (get-in db [:entity :project])
                   vals
-                  (map (fn [p] (assoc p :record/split-tags (u/split-tags (:record/tags p))))))))
+                  (map (fn [p] (assoc p :record/split-tags (->> (:record/tags p)
+                                                                u/split-tags
+                                                                (filter (complement empty?))
+                                                                set)))))))
 
 (rf/reg-sub ::tags
   :<- [::projects]
@@ -85,7 +88,7 @@
   [_ selected-tags _ projects]
   (if (seq selected-tags)
     (filter (fn [project]
-              (= (set/intersection selected-tags (set (:record/split-tags project)))
+              (= (set/intersection selected-tags (:record/split-tags project))
                  selected-tags))
             projects)
     projects))
