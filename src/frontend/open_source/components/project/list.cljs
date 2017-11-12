@@ -50,7 +50,7 @@
       [:th] [:th]
       [:th [:i.fa.fa-star]]
       [:th [:i.fa.fa-clock-o]]]]
-    [:tbody
+    [ui/ctg {:transitionName "filter-survivor" :class "listing-list" :component "tbody"}
      (let [selected-tags (-> (stfc/form project-flow/filter-form-path)
                              :form-data
                              deref

@@ -862,6 +862,7 @@ hr {
 
 table.projects {
   @include trailer(4);
+  width: 100%;
   th {
     text-align: left;
   }
