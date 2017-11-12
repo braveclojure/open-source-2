@@ -41,31 +41,47 @@
        [:i.fa.fa-clock-o]
        (:days-since-push stats)])]])
 
+(defn sort-arrow
+  [base-attr {:keys [attr dir]}]
+  (when (= base-attr attr)
+    [:span.sort
+     [:i.sort-dir.fa {:class (case dir
+                               :desc "fa-arrow-circle-o-down"
+                               :asc  "fa-arrow-circle-o-up")}]
+     " "]))
+
+(defn sort-header
+  [sort-attr sort-opts label]
+  [:div.sort-header
+   {:on-click #(rf/dispatch [::project-flow/set-sort sort-attr])}
+   [sort-arrow sort-attr sort-opts]
+   label])
+
 (defn project-list
   []
-  [:div.main.listings.public
-   [:table.projects
-    [:thead
-     [:tr
-      [:th "project"]
-      [:th] [:th]
-      [:th [:i.fa.fa-star]]
-      [:th [:i.fa.fa-clock-o]]]]
-    [:tbody
-     #_[ui/ctg {:transitionName         "filter-survivor"
-                :transitionEnterTimeout 300
-                :transitionLeaveTimeout 300
-                :class                  "listing-list"
-                :component              "tbody"}]
-     (let [selected-tags (-> (stfc/form project-flow/filter-form-path)
-                             :form-data
-                             deref
-                             :selected-tags)]
-       (->> @(rf/subscribe [::project-flow/filtered-projects])
-            (sort-by :slug)
-            (map (fn [p]
-                   ^{:key (str "os-project-" (:slug p))}
-                   [project p selected-tags]))))]]])
+  (let [sort-opts @(rf/subscribe [::project-flow/sort])]
+    [:div.main.listings.public
+     [:table.projects
+      [:thead
+       [:tr
+        [:th [sort-header :slug  sort-opts "project"]]
+        [:th] [:th]
+        [:th [sort-header :stargazers-count sort-opts [:i.fa.fa-star]]]
+        [:th [sort-header :days-since-push sort-opts [:i.fa.fa-clock-o]]]]]
+      [:tbody
+       #_[ui/ctg {:transitionName         "filter-survivor"
+                  :transitionEnterTimeout 300
+                  :transitionLeaveTimeout 300
+                  :class                  "listing-list"
+                  :component              "tbody"}]
+       (let [selected-tags (-> (stfc/form project-flow/filter-form-path)
+                               :form-data
+                               deref
+                               :selected-tags)]
+         (->> @(rf/subscribe [::project-flow/project-list])
+              (map (fn [p]
+                     ^{:key (str "os-project-" (:slug p))}
+                     [project p selected-tags]))))]]]))
 
 (defn filter-tags
   [tag-source]
@@ -84,6 +100,11 @@
       [input :search :query
        :no-label true
        :placeholder "Search: `music`, `database` ..."]]
+     [:div.section.ranges
+      [:div [input :number :stargazers-count
+             :label [:span [:i.fa.fa-star] " min github stars"]]]
+      [:div [input :number :days-since-push
+             :label [:span [:i.fa.fa-clock-o] " most days since last push"]]]]
      [:div.section.beginner-toggle
       [input :checkbox :project/beginner-friendly :label "Beginner friendly?"]]
      [filter-tags form-data]

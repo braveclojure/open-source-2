@@ -923,3 +923,11 @@ table.projects {
     white-space: nowrap;
   }
 }
+
+
+.sort-header {
+  cursor: pointer;
+  &:hover {
+    color: $teal;
+  }
+}

@@ -102,18 +102,10 @@
                             filter-form-path
                             [[:project/beginner-friendly stfilterf/filter-toggle]
                              [:query stfilterf/filter-query]
-                             [:selected-tags tag-filter]])
+                             [:selected-tags tag-filter]
+                             [:stargazers-count stfilterf/filter-attr>= #(get-in % [:project/stats :stargazers-count])]
+                             [:days-since-push stfilterf/filter-attr<= #(get-in % [:project/stats :days-since-push])]])
 
-#_(rf/reg-event-db ::toggle-tag
-    [trim-v]
-    (fn [db [tag]]
-      (let [tags (set (get-in db [:forms :projects :filter :data :tags]))
-            new-tags (if (tags tag) (disj tags tag) (conj tags tag))]
-        (println "path:" (r/projects-path {:query-params {:tags (clojure.string/join "," (sort new-tags))}}))
-        (r/nav (r/projects-path {:query-params {:tags (clojure.string/join "," (sort new-tags))}}))
-        db)))
-
-;; TODO add nav component?
 (rf/reg-event-db ::toggle-tag
   [rf/trim-v]
   (fn [db [tag]]
@@ -126,3 +118,34 @@
                              (if (selected-tags tag)
                                (disj selected-tags tag)
                                (conj selected-tags tag)))))))
+
+;;===========
+;; Sort projects
+;;===========
+
+(rf/reg-sub ::sort
+  (fn [db _]
+    (get-in db [:ui :project :list :sort])))
+
+(rf/reg-event-db ::set-sort
+  [rf/trim-v]
+  (fn [db [sort-attr]]
+    (update-in db [:ui :project :list :sort]
+               (fn [{:keys [attr dir]}]
+                 {:attr sort-attr
+                  :dir  ({true :desc false :asc}
+                         (or (not= attr sort-attr)
+                             (not= dir :desc)))}))))
+
+;;===========
+;; Sorted, filtered project
+;;===========
+
+(rf/reg-sub ::project-list
+  :<- [::sort]
+  :<- [::filtered-projects]
+  (fn [[{:keys [attr dir]} projects] _]
+    (let [key-fn (if (= :slug attr)
+                   :slug
+                   #(get-in % [:project/stats attr]))]
+      (sort-by key-fn (if (= :desc dir) < >) projects))))
