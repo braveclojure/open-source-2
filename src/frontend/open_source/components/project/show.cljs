@@ -1,10 +1,11 @@
 (ns open-source.components.project.show
   (:require [re-frame.core :as rf]
-            [open-source.components.ui :as ui]))
+            [open-source.components.ui :as ui]
+            [open-source.flows.project :as project-flow]))
 
 (defn component
   []
-  (let [project @(rf/subscribe [:current-project])]
+  (let [project @(rf/subscribe [::project-flow/current-project])]
     [:div.container
      [:div.listings
       [:div.view-all [:a {:href "/"} "← view all open source projects"]]

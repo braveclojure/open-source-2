@@ -1,11 +1,12 @@
 (ns open-source.components.project.edit
   (:require [re-frame.core :as rf]
             [open-source.components.ui :as ui]
-            [open-source.components.project.form :as pf]))
+            [open-source.components.project.form :as pf]
+            [open-source.flows.project :as project-flow]))
 
 (defn component
   []
-  (let [project @(rf/subscribe [:current-project])]
+  (let [project @(rf/subscribe [::project-flow/current-project])]
     [:div.container
      [:div.edit-listing
       [:div.view-all

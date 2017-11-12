@@ -1,7 +1,8 @@
 (ns open-source.components.project.form
   (:require [sweet-tooth.frontend.form.components :as stfc]
             [open-source.utils :as u]
-            [open-source.components.ui :as ui]))
+            [open-source.components.ui :as ui]
+            [open-source.flows.project :as project-flow]))
 
 (defn submit-text
   [project-id]
@@ -20,7 +21,7 @@
       [:div.listing-form.clearfix
        [:div.form
         [:h2 "Details"]
-        [:form (stfc/on-submit form-path {:success :created-project :clear :all})
+        [:form (stfc/on-submit form-path {:success ::project-flow/created-project :clear :all})
          [:div
           
           [:div.section.clearfix

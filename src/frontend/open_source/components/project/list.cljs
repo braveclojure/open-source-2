@@ -12,34 +12,33 @@
                :data-prevent-nav true
                :on-click #(do (.stopPropagation %)
                               (.preventDefault %)
-                              (rf/dispatch [:toggle-tag tag]))} tag]])
+                              (rf/dispatch [::project-flow/toggle-tag tag]))} tag]])
 
 (defn project
-  [{:keys [project/stats project/beginner-friendly] :as p}]
-  (let [selected-tags {}]
-    [:tr.project
-     {:class (if beginner-friendly "beginner-friendly")}
-     [:td
-      [:a.project-main {:href (:slug p)}
-       [:span.name (:project/name p)]
-       [:span.tagline (:project/tagline p)]]
-      (if (:project/beginner-friendly p)
-        [:div.beginner-friendly [:i.fa.fa-check] " beginner friendly"])
-      (if-let [t (:record/tags p)]
-        [:div.tags
-         (for [tag (u/split-tags t)]
-           ^{:key (gensym)} [filter-tag selected-tags tag])])]
-     [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
-     [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
-     [:td.stargazers
-      (when stats
-        [:span.stargazers [:i.fa.fa-star] (:stargazers-count stats)])]
-     [:td.stargazers
-      (when stats
-        [:span.last-pushed
-         {:title "days since last push"}
-         [:i.fa.fa-clock-o]
-         (:days-since-push stats)])]]))
+  [{:keys [project/stats project/beginner-friendly] :as p} selected-tags]
+  [:tr.project
+   {:class (if beginner-friendly "beginner-friendly")}
+   [:td
+    [:a.project-main {:href (:slug p)}
+     [:span.name (:project/name p)]
+     [:span.tagline (:project/tagline p)]]
+    (if (:project/beginner-friendly p)
+      [:div.beginner-friendly [:i.fa.fa-check] " beginner friendly"])
+    (if-let [t (:record/split-tags p)]
+      [:div.tags
+       (for [tag t]
+         ^{:key (gensym)} [filter-tag selected-tags tag])])]
+   [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
+   [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
+   [:td.stargazers
+    (when stats
+      [:span.stargazers [:i.fa.fa-star] (:stargazers-count stats)])]
+   [:td.stargazers
+    (when stats
+      [:span.last-pushed
+       {:title "days since last push"}
+       [:i.fa.fa-clock-o]
+       (:days-since-push stats)])]])
 
 (defn project-list
   []
@@ -52,17 +51,28 @@
       [:th [:i.fa.fa-star]]
       [:th [:i.fa.fa-clock-o]]]]
     [:tbody
-     (->> @(rf/subscribe [:filtered-projects])
-          (sort-by :slug)
-          (map (fn [p]
-                 ^{:key (str "os-project-" (:slug p))}
-                 [project p])))]]])
+     (let [selected-tags (-> (stfc/form project-flow/filter-form-path)
+                             :form-data
+                             deref
+                             :selected-tags)]
+       (->> @(rf/subscribe [::project-flow/filtered-projects])
+            (sort-by :slug)
+            (map (fn [p]
+                   ^{:key (str "os-project-" (:slug p))}
+                   [project p selected-tags]))))]]])
+
+(defn filter-tags
+  [tag-source]
+  (let [selected-tags (:selected-tags @tag-source)
+        tags          @(rf/subscribe [::project-flow/tags])]
+    [:div.section.tags
+     [:div
+      (for [tag tags]
+        ^{:key (gensym)} [filter-tag selected-tags tag])]]))
 
 (defn sidebar
   []
-  (let [{:keys [input]} (stfc/form project-flow/filter-form-path)
-        selected-tags []
-        tags []]
+  (let [{:keys [input form-data]} (stfc/form project-flow/filter-form-path)] 
     [:div.secondary.listings
      [:div.section.search
       [input :search :query
@@ -70,10 +80,7 @@
        :placeholder "Search: `music`, `database` ..."]]
      [:div.section.beginner-toggle
       [input :checkbox :project/beginner-friendly :label "Beginner friendly?"]]
-     [:div.section.tags
-      [:div
-       (for [tag tags]
-         ^{:key (gensym)} [filter-tag selected-tags tag])]]
+     [filter-tags form-data]
      [:div.section
       [:div.details
        [:h3 "Learn Clojure"]

@@ -1,17 +1,26 @@
 (ns open-source.flows.project
   (:require [re-frame.core :as rf]
+            [open-source.utils :as u]
             [sweet-tooth.frontend.remote.flow :as strf]
             [sweet-tooth.frontend.routes.flow :as strof]
             [sweet-tooth.frontend.filter.flow :as stfilterf]
             [sweet-tooth.frontend.form.flow :as stff]
-            [sweet-tooth.frontend.core.utils :as u]
+            [sweet-tooth.frontend.form.utils :as stfu]
+            [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.paths :as p]))
 
-(rf/reg-sub :projects
-  (fn [db _] (vals (get-in db [:entity :project]))))
+(rf/reg-sub ::projects
+  (fn [db _] (->> (get-in db [:entity :project])
+                  vals
+                  (map (fn [p] (assoc p :record/split-tags (u/split-tags (:record/tags p))))))))
 
-(rf/reg-sub :current-project
-  :<- [:projects]
+(rf/reg-sub ::tags
+  :<- [::projects]
+  (fn [projects _]
+    (distinct (mapcat :record/split-tags projects))))
+
+(rf/reg-sub ::current-project
+  :<- [::projects]
   :<- [::strof/nav]
   (fn [[projects nav] _]
     (get projects (:project-id (:params nav)))))
@@ -25,7 +34,10 @@
       {}
       ((strf/GET-list-fx "/api/project") cofx args))))
 
+;;===========
 ;; Editing a project
+;;===========
+
 (defn project-id
   [db]
   (get-in db [p/nav-prefix :params :project-id]))
@@ -41,7 +53,7 @@
 (rf/reg-event-db :edit-project-load-success
   [rf/trim-v]
   (fn [db [m project-id]]
-    (copy-project-for-edit (u/deep-merge db m))))
+    (copy-project-for-edit (stcu/deep-merge db m))))
 
 (rf/reg-event-fx :edit-project
   [rf/trim-v]
@@ -53,19 +65,45 @@
       ((strf/GET-list-fx "/api/project" {:on-success [:edit-project-load-success (project-id db)]}) cofx args))))
 
 
+;;===========
 ;; Create a project
+;;===========
 
-(rf/reg-event-fx :created-project
+(rf/reg-event-fx ::created-project
   [rf/trim-v]
   (fn [{:keys [db]} args]
     {:db  (stff/submit-form-success db args)
      :nav "/"}))
 
+;;===========
 ;; Filter projects
+;;===========
 (def filter-form-path [:projects :filter])
 
-(stfilterf/reg-filtered-sub :filtered-projects
-                            :projects
+(stfilterf/reg-filtered-sub ::filtered-projects
+                            ::projects
                             filter-form-path
                             [[:project/beginner-friendly stfilterf/filter-toggle]
                              [:query stfilterf/filter-query]])
+
+#_(rf/reg-event-db ::toggle-tag
+    [trim-v]
+    (fn [db [tag]]
+      (let [tags (set (get-in db [:forms :projects :filter :data :tags]))
+            new-tags (if (tags tag) (disj tags tag) (conj tags tag))]
+        (println "path:" (r/projects-path {:query-params {:tags (clojure.string/join "," (sort new-tags))}}))
+        (r/nav (r/projects-path {:query-params {:tags (clojure.string/join "," (sort new-tags))}}))
+        db)))
+
+(rf/reg-event-db ::toggle-tag
+  [rf/trim-v]
+  (fn [db [tag]]
+    (stfu/update-in-form db
+                         filter-form-path
+                         :selected-tags
+                         (fn [selected-tags]
+                           (if (nil? selected-tags)
+                             #{tag}
+                             (if (selected-tags tag)
+                               (disj selected-tags tag)
+                               (conj selected-tags tag)))))))
