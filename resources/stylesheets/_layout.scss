@@ -455,6 +455,11 @@ body {
   user-select: none;
   position: relative;
   
+  &:hover {
+    cursor: pointer;
+    background: $teal;
+  }
+
   &.active {
     background: $salmon;
   }
@@ -930,4 +935,8 @@ table.projects {
   &:hover {
     color: $teal;
   }
+}
+
+.stargazers-count, .days-since-push {
+  white-space: nowrap;
 }

@@ -64,10 +64,13 @@
      [:table.projects
       [:thead
        [:tr
-        [:th [sort-header :slug  sort-opts "project"]]
+        [:th.slug
+         [sort-header :slug  sort-opts "project"]]
         [:th] [:th]
-        [:th [sort-header :stargazers-count sort-opts [:i.fa.fa-star]]]
-        [:th [sort-header :days-since-push sort-opts [:i.fa.fa-clock-o]]]]]
+        [:th.stargazers-count
+         [sort-header :stargazers-count sort-opts [:i.fa.fa-star]]]
+        [:th.days-since-push
+         [sort-header :days-since-push sort-opts [:i.fa.fa-clock-o]]]]]
       [:tbody
        #_[ui/ctg {:transitionName         "filter-survivor"
                   :transitionEnterTimeout 300
