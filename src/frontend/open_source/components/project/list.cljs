@@ -24,10 +24,11 @@
      [:span.tagline (:project/tagline p)]]
     (if (:project/beginner-friendly p)
       [:div.beginner-friendly [:i.fa.fa-check] " beginner friendly"])
-    (if-let [t (sort (:record/split-tags p))]
-      [:div.tags
-       (for [tag t]
-         ^{:key (gensym)} [filter-tag selected-tags tag])])]
+    (let [t (sort (:record/split-tags p))]
+      (if (seq t)
+        [:div.tags
+         (for [tag t]
+           ^{:key (gensym)} [filter-tag selected-tags tag])]))]
    [:td.home-page [:a {:href (:project/home-page-url p)} [:i.fa.fa-globe]]]
    [:td.repo [:a {:href (:project/repo-url p)} [:i.fa.fa-code-fork]]]
    [:td.stargazers
@@ -50,11 +51,12 @@
       [:th] [:th]
       [:th [:i.fa.fa-star]]
       [:th [:i.fa.fa-clock-o]]]]
-    [ui/ctg {:transitionName         "filter-survivor"
-             :transitionEnterTimeout 300
-             :transitionLeaveTimeout 300
-             :class                  "listing-list"
-             :component              "tbody"}
+    [:tbody
+     #_[ui/ctg {:transitionName         "filter-survivor"
+                :transitionEnterTimeout 300
+                :transitionLeaveTimeout 300
+                :class                  "listing-list"
+                :component              "tbody"}]
      (let [selected-tags (-> (stfc/form project-flow/filter-form-path)
                              :form-data
                              deref

@@ -64,3 +64,7 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ** TODO filter by
 *** num stars
 *** days since last commit
+** TODO sort
+*** project name
+*** stars
+*** last commit date
