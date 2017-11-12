@@ -10,13 +10,17 @@
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.paths :as p]))
 
+(rf/reg-sub ::raw-projects
+  (fn [db _] (get-in db [:entity :project])))
+
 (rf/reg-sub ::projects
-  (fn [db _] (->> (get-in db [:entity :project])
-                  vals
-                  (map (fn [p] (assoc p :record/split-tags (->> (:record/tags p)
-                                                                u/split-tags
-                                                                (filter (complement empty?))
-                                                                set)))))))
+  :<- [::raw-projects]
+  (fn [raw-projects _] (->> raw-projects
+                            vals
+                            (map (fn [p] (assoc p :record/split-tags (->> (:record/tags p)
+                                                                          u/split-tags
+                                                                          (filter (complement empty?))
+                                                                          set)))))))
 
 (rf/reg-sub ::tags
   :<- [::projects]
@@ -24,10 +28,10 @@
     (distinct (mapcat :record/split-tags projects))))
 
 (rf/reg-sub ::current-project
-  :<- [::projects]
+  :<- [::raw-projects]
   :<- [::strof/nav]
-  (fn [[projects nav] _]
-    (get projects (:project-id (:params nav)))))
+  (fn [[raw-projects nav] _]
+    (get raw-projects (:project-id (:params nav)))))
 
 (rf/reg-event-fx :load-projects
   [rf/trim-v]
