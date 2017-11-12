@@ -1,6 +1,7 @@
 (ns open-source.flows.project
   (:require [re-frame.core :as rf]
             [open-source.utils :as u]
+            [clojure.set :as set]
             [sweet-tooth.frontend.remote.flow :as strf]
             [sweet-tooth.frontend.routes.flow :as strof]
             [sweet-tooth.frontend.filter.flow :as stfilterf]
@@ -80,11 +81,21 @@
 ;;===========
 (def filter-form-path [:projects :filter])
 
+(defn tag-filter
+  [_ selected-tags _ projects]
+  (if (seq selected-tags)
+    (filter (fn [project]
+              (= (set/intersection selected-tags (set (:record/split-tags project)))
+                 selected-tags))
+            projects)
+    projects))
+
 (stfilterf/reg-filtered-sub ::filtered-projects
                             ::projects
                             filter-form-path
                             [[:project/beginner-friendly stfilterf/filter-toggle]
-                             [:query stfilterf/filter-query]])
+                             [:query stfilterf/filter-query]
+                             [:selected-tags tag-filter]])
 
 #_(rf/reg-event-db ::toggle-tag
     [trim-v]
@@ -95,6 +106,7 @@
         (r/nav (r/projects-path {:query-params {:tags (clojure.string/join "," (sort new-tags))}}))
         db)))
 
+;; TODO add nav component?
 (rf/reg-event-db ::toggle-tag
   [rf/trim-v]
   (fn [db [tag]]
