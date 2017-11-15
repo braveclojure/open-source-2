@@ -97,6 +97,16 @@
             projects)
     projects))
 
+(defn inclusive-filter-attr<=
+  [form-attr attr-val [key-fn] xs]
+  (if attr-val
+    (let [key-fn (or key-fn form-attr)]
+      (filter #(let [x-val (key-fn %)]
+                 (or (nil? x-val)
+                     (<= x-val attr-val)))
+              xs))
+    xs))
+
 (stfilterf/reg-filtered-sub ::filtered-projects
                             ::projects
                             filter-form-path
@@ -104,7 +114,7 @@
                              [:query stfilterf/filter-query]
                              [:selected-tags tag-filter]
                              [:stargazers-count stfilterf/filter-attr>= #(get-in % [:project/stats :stargazers-count])]
-                             [:days-since-push stfilterf/filter-attr<= #(get-in % [:project/stats :days-since-push])]])
+                             [:days-since-push inclusive-filter-attr<= #(get-in % [:project/stats :days-since-push])]])
 
 (rf/reg-event-db ::toggle-tag
   [rf/trim-v]

@@ -2,7 +2,33 @@
   (:require [sweet-tooth.frontend.form.components :as stfc]
             [open-source.utils :as u]
             [open-source.components.ui :as ui]
-            [open-source.flows.project :as project-flow]))
+            [open-source.flows.project :as project-flow]
+            [open-source.constants :as constants]
+            [clojure.string :as str]))
+
+(defn text->set
+  [text]
+  (if (empty? text)
+    #{}
+    (-> text (str/split ", ") set)))
+
+(defn toggle-text-set-membership
+  [text-set tag]
+  (->> (stfc/toggle-set-membership (text->set text-set) tag)
+       (str/join ", ")))
+
+(defmethod stfc/input :set-as-text
+  [type {:keys [form-id attr-val attr-path options] :as opts}]
+  (let [value    @attr-val
+        text-set (text->set value)]
+    [:div (map (fn [tag]
+                 ^{:key (str "form-tag-" tag)}
+                 [:span.tag {:on-click #(stfc/handle-change*
+                                          (toggle-text-set-membership (or @attr-val "") tag)
+                                          attr-path)
+                             :class    (if (text-set tag) "active")}
+                  tag])
+               options)]))
 
 (defn submit-text
   [project-id]
@@ -52,10 +78,8 @@
             :label "Tag for beginner-friendly issues"
             :placeholder "beginner"
             :tip [:span "The tag you use e.g. on GitHub to distinguish which issues are easy enough for beginners"]]
-           [input :text :record/tags
-            :tip "Comma-separated"
-            :placeholder "web development, framework, backend, frontend"]
-
+           [input :set-as-text :record/tags
+            :options constants/allowed-tags]
            [input :textarea :project/description
             :placeholder "Luminus is a Clojure micro-framework for web development. We have an active community that's dedicated to helping new-comers. To learn about how to get involved, please visit our contribute page: http://www.luminusweb.net/contribute. You can also stop by #luminus on Slack or IRC."
             :required true

@@ -1,5 +1,5 @@
 (set-env!
-  :source-paths #{"src/backend" "src/frontend" "dev/src" "test/backend"}
+  :source-paths #{"src/backend" "src/frontend" "src/cross" "dev/src" "test/backend"}
   :resource-paths #{"resources" "dev/resources"}
   :dependencies '[[org.clojure/clojure "1.9.0-alpha16"]
                   [org.clojure/clojurescript "1.9.854"]

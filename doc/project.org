@@ -40,12 +40,12 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 - is it better to push just the get into a function, and then map over result?
 ***** TODO write test
 ***** TODO separate out the pmap/http get part
-** TODO create project
+** DONE create project
 *** DONE endpoint
 *** DONE form
 *** DONE post-create
 *** TODO value returned is incorrect
-** TODO update list view
+** DONE update list view
 *** copy over text search
 *** limit tags?
 *** extra meta
@@ -61,10 +61,10 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ** TODO how to limit what gets refreshed with each reload?
 ** TODO periodically refresh stats
 ** TODO create a "tags" file that lists allowable tags
-** TODO filter by
+** DONE filter by
 *** num stars
 *** days since last commit
-** TODO sort
+** DONE sort
 *** project name
 *** stars
 *** last commit date
