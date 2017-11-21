@@ -33,8 +33,9 @@
   :auth-token #duct/env ["OPEN_SOURCE_GITHUB_OAUTH_TOKEN"]}
 
  :open-source.db/github-watcher
- {:interval 30000
-  :db       #ig/ref :open-source.db/github}
+ {:refresh-interval 30000
+  :replace-interval 60000
+  :db               #ig/ref :open-source.db/github}
  
  :duct.router/cascading
  [#ig/ref :open-source.endpoint/static

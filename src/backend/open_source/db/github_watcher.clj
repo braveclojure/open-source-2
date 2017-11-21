@@ -5,11 +5,15 @@
 
 
 
-(defmethod ig/init-key :open-source.db/github-watcher [_ {:keys [interval db]}]
+(defmethod ig/init-key :open-source.db/github-watcher [_ {:keys [replace-interval refresh-interval db]}]
   (let [kill-ch (chan)]
     (go-loop []
-      (when-not (= kill-ch (second (alts! [kill-ch (timeout interval)])))
+      (when-not (= kill-ch (second (alts! [kill-ch (timeout refresh-interval)])))
         (osgh/refresh-projects! db)
+        (recur)))
+    (go-loop []
+      (when-not (= kill-ch (second (alts! [kill-ch (timeout replace-interval)])))
+        (osgh/replace-local-projects! db)
         (recur)))
     kill-ch))
 

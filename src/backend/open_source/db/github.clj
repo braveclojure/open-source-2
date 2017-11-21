@@ -123,17 +123,28 @@
   "Resolves the differences between the current projects and github files"
   [current-projects updated-files deleted-file-paths]
   (->> updated-files
-       (reduce (fn [xs x] (assoc xs (:path x) x))
+       (reduce (fn [xs x] (assoc xs (:db/id x) x))
                current-projects)
        (#(apply dissoc % deleted-file-paths))))
 
 
 (defn refresh-projects
+  "Ensures that the .edn files and memory representation of projects
+  are in sync."
   [current-projects user repo auth-token]
   (let [project-index (read-project-index user repo auth-token)]
     (update-projects current-projects
                      (get-updated-files auth-token current-projects project-index)
                      (filter-deleted-file-paths current-projects project-index))))
+
+(defn replace-local-projects
+  "Replaces local with remote, ensuring every project gets
+  updated. Easy way to get updated GH stats on each project."
+  [current-projects user repo auth-token]
+  (let [project-index (read-project-index user repo auth-token)]
+    (update-projects {}
+                     (get-updated-files auth-token {} project-index)
+                     (filter-deleted-file-paths {} project-index))))
 
 ;; ------
 ;; update the project db
@@ -201,11 +212,14 @@
 (defprotocol GithubProjectDb
   "Interact with Project"
   (refresh-projects! [project-db])
+  (replace-local-projects! [project-db])
   (write-project! [project-db project])
   (project-list [project-db]))
 
 (defrecord ProjectDb [project-atom user repo auth-token]
   GithubProjectDb
+  (replace-local-projects! [_]
+    (swap! project-atom replace-local-projects user repo auth-token))
   (refresh-projects! [_]
     (swap! project-atom refresh-projects user repo auth-token))
   (write-project! [_ project]

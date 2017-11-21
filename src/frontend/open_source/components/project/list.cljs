@@ -51,26 +51,26 @@
      " "]))
 
 (defn sort-header
-  [sort-attr sort-opts label]
+  [sort-attr current-sort label]
   [:div.sort-header
    {:on-click #(rf/dispatch [::project-flow/set-sort sort-attr])}
-   [sort-arrow sort-attr sort-opts]
+   [sort-arrow sort-attr current-sort]
    label])
 
 (defn project-list
   []
-  (let [sort-opts @(rf/subscribe [::project-flow/sort])]
+  (let [current-sort @(rf/subscribe [::project-flow/sort])]
     [:div.main.listings.public
      [:table.projects
       [:thead
        [:tr
         [:th.slug
-         [sort-header :slug  sort-opts "project"]]
+         [sort-header :slug  current-sort "project"]]
         [:th] [:th]
         [:th.stargazers-count
-         [sort-header :stargazers-count sort-opts [:i.fa.fa-star]]]
+         [sort-header :stargazers-count current-sort [:i.fa.fa-star]]]
         [:th.days-since-push
-         [sort-header :days-since-push sort-opts [:i.fa.fa-clock-o]]]]]
+         [sort-header :days-since-push current-sort [:i.fa.fa-clock-o]]]]]
       [:tbody
        #_[ui/ctg {:transitionName         "filter-survivor"
                   :transitionEnterTimeout 300
