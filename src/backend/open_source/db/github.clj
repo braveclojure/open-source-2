@@ -31,7 +31,9 @@
   (try (:body (client/get (github-url user repo endpoint)
                           (api-headers auth-token)))
        (catch Exception e
-         (timbre/error "Exception getting from API" user repo endpoint (.getMessage e)))))
+         (timbre/error "Exception getting from API" (.getMessage e)
+                       user repo endpoint
+                       (ex-data e)))))
 
 (defn format-time
   [t]
@@ -74,7 +76,7 @@
   indicate activity and popularity"
   [project auth-token]
   (if-let [[_ user repo] (re-find #"https?://github.com/([^/]+)/([^/]+)/?$" (:project/repo-url project))]
-    (let [stats (github-api-get user repo "" auth-token)]
+    (if-let [stats (github-api-get user repo "" auth-token)]
       (assoc project :project/stats {:stargazers-count (:stargazers_count stats)
                                      :pushed-at        (:pushed_at stats)
                                      :days-since-push  (days-old (:pushed_at stats))}))
@@ -132,15 +134,16 @@
   "Ensures that the .edn files and memory representation of projects
   are in sync."
   [current-projects user repo auth-token]
-  (let [project-index (read-project-index user repo auth-token)]
+  (if-let [project-index (read-project-index user repo auth-token)]
     (update-projects current-projects
                      (get-updated-files auth-token current-projects project-index)
-                     (filter-deleted-file-paths current-projects project-index))))
+                     (filter-deleted-file-paths current-projects project-index))
+    current-projects))
 
 (defn replace-local-projects
   "Replaces local with remote, ensuring every project gets
   updated. Easy way to get updated GH stats on each project."
-  [current-projects user repo auth-token]
+  [_current-projects user repo auth-token]
   (let [project-index (read-project-index user repo auth-token)]
     (update-projects {}
                      (get-updated-files auth-token {} project-index)
@@ -208,6 +211,10 @@
   (client/put (github-url user repo (str "/contents/projects/" (str (id project) ".edn")))
               (merge (api-headers auth-token)
                      {:body (json/generate-string (github-project-params project))})))
+
+(def cache-projects
+  [project]
+  )
 
 (defprotocol GithubProjectDb
   "Interact with Project"

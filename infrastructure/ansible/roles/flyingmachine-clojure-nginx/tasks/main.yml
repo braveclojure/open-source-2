@@ -1,0 +1,25 @@
+- name: Install required system packages
+  apt: pkg="{{item}}" state=installed update-cache=yes
+  with_items:
+  - nginx
+  - openssl
+
+- name: Nginx config
+  copy: src=files/nginx-http.conf dest={{ nginx_dir }}/nginx.conf
+  notify:
+    - reload nginx
+
+- name: App nginx config
+  copy: src=files/app-nginx.conf dest={{ nginx_dir }}/sites-enabled/open-source.conf
+  notify:
+    - reload nginx
+    
+- name: remove default nginx site
+  file: dest={{ nginx_dir }}/sites-enabled/default state=absent
+  notify:
+    - reload nginx
+
+- name: start nginx
+  service: name=nginx state=started
+  become: yes
+  become_method: sudo

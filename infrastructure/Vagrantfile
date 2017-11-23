@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+def f(path)
+  File.dirname(__FILE__) + "/" + path
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  # The Clojure app is a process running on port 3000
+  # This lets you view the app directly (without nginx in front of it)
+  # by visiting localhost:3100
+  config.vm.network :forwarded_port, guest: 3100, host: 3101
+
+  # Use localhost:8000 to connect to nginx
+  config.vm.network :forwarded_port, guest: 80, host: 8100
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = f "ansible/provision.yml"
+    ansible.groups = {
+      "webservers" => ["default"],
+      "database" => ["default"]
+    }
+  end
+  
+  config.vm.provider "virtualbox" do |v|
+    # Modify this to match the droplet size you plan on using
+    v.memory = 1028
+  end
+end

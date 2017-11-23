@@ -48,26 +48,32 @@
 
 (def sweet-tooth-packages
   "Define this seperately so packages can get included as checkouts"
-  '[[sweet-tooth/sweet-tooth-frontend "0.2.7-SNAPSHOT"]
+  '[[sweet-tooth/sweet-tooth-frontend "0.2.8-SNAPSHOT"]
     [sweet-tooth/sweet-tooth-endpoint "0.2.2"]
     [sweet-tooth/sweet-tooth-workflow "0.2.4"]])
 
 (set-env! :dependencies #(into % sweet-tooth-packages)
           ;; for dev
-          :checkouts sweet-tooth-packages)
+          :checkouts sweet-tooth-packages
+          )
 
 (require '[boot.core]
          '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-reload :refer [reload]]
-         '[sweet-tooth.workflow.tasks :refer [dev reload-integrant] :as tasks]
+         '[sweet-tooth.workflow.tasks :refer [dev reload-integrant build] :as tasks]
          '[integrant.repl :as ir]
          '[integrant.repl.state :as irs]
          '[dev])
 
 (task-options!
-  cljs {:compiler-options {:asset-path "/main.out"
-                             :parallel-build true
-                             :preloads '[devtools.preload]}}
+  cljs {:compiler-options {:asset-path     "/main.out"
+                           :parallel-build true
+                           :preloads       '[devtools.preload]}}
+
+  build {:version   "2.0.0"
+         :project 'open-source
+         :main    'open-source.core
+         :file    "app.jar"}
 
   reload {:on-jsload 'open-source.core/-main}
 

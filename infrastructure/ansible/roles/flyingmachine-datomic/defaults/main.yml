@@ -1,0 +1,6 @@
+---
+datomic_version: "0.9.5344"
+datomic_dir: /var/lib/datomic
+datomic_data_dir: /var/lib/datomic/data
+datomic_filename: "datomic.zip"
+datomic_uri: datomic:free://localhost:4334/app

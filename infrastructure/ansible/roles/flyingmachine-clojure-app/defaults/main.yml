@@ -1,0 +1,5 @@
+---
+# TODO refactor this into "common"
+app_user: open-source
+app_name: open-source
+app_root: /var/www/open-source

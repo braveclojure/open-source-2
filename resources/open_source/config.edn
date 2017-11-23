@@ -34,7 +34,7 @@
 
  :open-source.db/github-watcher
  {:refresh-interval 30000
-  :replace-interval 60000
+  :replace-interval 600000
   :db               #ig/ref :open-source.db/github}
  
  :duct.router/cascading

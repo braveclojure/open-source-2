@@ -1,0 +1,17 @@
+---
+- hosts: webservers
+  vars_files:
+    - roles/flyingmachine-clojure-app/defaults/main.yml
+    - roles/flyingmachine-datomic/defaults/main.yml
+  
+  tasks:
+  # A non-ansible script creats files/app.jar
+  - name: Copy uberjar
+    copy: src=files/app.jar dest={{ app_root }}/app.jar
+    become: yes
+    become_user: "{{ app_user }}"
+    
+  - name: Restart web app
+    service: name={{ app_name }} state=restarted
+    become: yes
+    become_method: sudo

@@ -1,0 +1,29 @@
+---
+# This sets up the filesystem for the clojure app
+- name: Create user
+  user: home=/home/{{ app_user }} name={{ app_user }} state=present
+
+- name: Create project directory
+  file: state=directory path={{ app_root }} owner={{ app_user }} group={{ app_user }} mode=755
+
+- name: Copy env
+  copy: src=files/env dest={{ app_root }}/env
+
+- name: Add java 7 repo
+  apt_repository: repo='ppa:openjdk-r/ppa'
+
+- name: Install required system packages
+  apt: pkg="{{item}}" state=installed update-cache=yes
+  with_items:
+  - openjdk-7-jre
+  - wget
+  - unzip
+  - vim
+  - curl
+
+  # TODO abstract this
+- name: Upload web app upstart config file
+  copy: src="files/app-upstart.conf" dest="/etc/init/{{ app_name }}.conf"
+
+- name: Make app log directory
+  file: state=directory path=/var/log/{{ app_name }} owner={{ app_user }} group={{app_user}} mode=755
