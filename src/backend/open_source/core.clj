@@ -16,10 +16,8 @@
 
 (defn prep
   []
-  (duct/prep (duct/read-config (io/resource "open-source/config.edn"))))
+  (duct/prep (duct/read-config (io/resource "open_source/config.edn"))))
 
 (defn -main
   [cmd & args]
-  (case cmd
-    "server"
-    (ig/init (prep) [:duct/daemon])))
+  (case cmd "server" (ig/init (prep) [:duct/daemon])))

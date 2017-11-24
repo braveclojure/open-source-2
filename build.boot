@@ -1,7 +1,7 @@
 (set-env!
   :source-paths #{"src/backend" "src/frontend" "src/cross" "dev/src" "test/backend"}
   :resource-paths #{"resources" "dev/resources"}
-  :dependencies '[[org.clojure/clojure "1.9.0-alpha16"]
+  :dependencies '[[org.clojure/clojure "1.9.0-alpha12"]
                   [org.clojure/clojurescript "1.9.854"]
                   [adzerk/boot-cljs "RELEASE" :scope "test"]
                   [com.taoensso/timbre "4.10.0"]
@@ -54,7 +54,7 @@
 
 (set-env! :dependencies #(into % sweet-tooth-packages)
           ;; for dev
-          :checkouts sweet-tooth-packages
+          ;; :checkouts sweet-tooth-packages
           )
 
 (require '[boot.core]
