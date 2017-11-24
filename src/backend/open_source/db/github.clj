@@ -11,28 +11,33 @@
             [taoensso.timbre :as timbre]))
 
 (def projects (atom {}))
+(def etags (atom {}))
+(def responses (atom {}))
 
-(defn auth-headers
-  [auth-token]
-  {:headers {"Authorization" (str "token " auth-token)}})
-
-(defn api-headers
-  "Common configuration for interacting with the Github API"
-  [auth-token]
-  (merge {:as :json}
-         (auth-headers auth-token)))
+(defn github-headers
+  [auth-token & [etag as-json]]
+  (cond-> {:headers (cond-> {"Authorization" (str "token " auth-token)}
+                      etag (assoc "If-None-Match" etag))}
+    as-json (assoc :as :json)))
 
 (defn github-url
   [user repo endpoint]
   (format "https://api.github.com/repos/%s/%s%s" user repo endpoint))
 
-(defn github-api-get
-  [user repo endpoint auth-token]
-  (try (:body (client/get (github-url user repo endpoint)
-                          (api-headers auth-token)))
+(defn github-get
+  [url auth-token & [as-json]]
+  (try (let [etag     (get @etags url)
+             response (client/get url (github-headers auth-token etag as-json))]
+         (if (= (:status response) 304)
+           (get @responses etag)
+           (let [new-etag (get-in response [:headers "ETag"])
+                 body (:body response)]
+             (swap! etags assoc url new-etag)
+             (swap! responses assoc new-etag body)
+             body)))
        (catch Exception e
          (timbre/error "Exception getting from API" (.getMessage e)
-                       user repo endpoint
+                       url
                        (ex-data e)))))
 
 (defn format-time
@@ -76,7 +81,7 @@
   indicate activity and popularity"
   [project auth-token]
   (if-let [[_ user repo] (re-find #"https?://github.com/([^/]+)/([^/]+)/?$" (:project/repo-url project))]
-    (if-let [stats (github-api-get user repo "" auth-token)]
+    (if-let [stats (github-get (github-url user repo "") auth-token :as-json)]
       (assoc project :project/stats {:stargazers-count (:stargazers_count stats)
                                      :pushed-at        (:pushed_at stats)
                                      :days-since-push  (days-old (:pushed_at stats))}))
@@ -92,26 +97,25 @@
 (defn filter-deleted-file-paths
   "Paths of projects that don't exist in github repo"
   [current-projects files]
-  (set/difference (set (keys current-projects))
+  (set/difference (set (map :path (vals current-projects)))
                   (set (map :path files))))
 
 (defn read-project-index
   [user repo auth-token]
-  (github-api-get user repo "/contents/projects" auth-token))
+  (github-get (github-url user repo "/contents/projects") auth-token :as-json))
+
+(defn read-project
+  [auth-token file]
+  (some-> (:download_url file)
+          (github-get auth-token)
+          edn/read-string
+          (add-metadata file)
+          (read-project-stats auth-token)))
 
 (defn read-projects
   "Download project files"
   [auth-token files]
-  (pmap (fn [file]
-          (try (-> (:download_url file)
-                   (client/get (auth-headers auth-token))
-                   :body
-                   edn/read-string
-                   (add-metadata file)
-                   (read-project-stats auth-token))
-               (catch Exception e
-                 (timbre/error "Exception getting from API" (:download_url file)  (.getMessage e)))))
-        files))
+  (pmap (partial read-project auth-token) files))
 
 (defn get-updated-files
   "Finds all project files that have been updated, reads them, adds
@@ -127,7 +131,8 @@
   (->> updated-files
        (reduce (fn [xs x] (assoc xs (:db/id x) x))
                current-projects)
-       (#(apply dissoc % deleted-file-paths))))
+       (remove (fn [[k v]] (deleted-file-paths (:path v))))
+       (into {})))
 
 
 (defn refresh-projects
@@ -209,12 +214,23 @@
 (defn write-project-to-github
   [project user repo auth-token]
   (client/put (github-url user repo (str "/contents/projects/" (str (id project) ".edn")))
-              (merge (api-headers auth-token)
+              (merge (github-headers auth-token nil :as-json)
                      {:body (json/generate-string (github-project-params project))})))
 
-(def cache-projects
-  [project]
-  )
+(defn cache-projects
+  [projects]
+  (when-not (empty? projects) (spit "projects.edn" (str projects))))
+
+(defn read-cache
+  []
+  (try (read-string (slurp "projects.edn"))
+       (catch Exception e nil)))
+
+(defn swap-and-cache!
+  [& args]
+  (let [new (apply swap! args)]
+    (cache-projects new)
+    new))
 
 (defprotocol GithubProjectDb
   "Interact with Project"
@@ -226,16 +242,17 @@
 (defrecord ProjectDb [project-atom user repo auth-token]
   GithubProjectDb
   (replace-local-projects! [_]
-    (swap! project-atom replace-local-projects user repo auth-token))
+    (swap-and-cache! project-atom replace-local-projects user repo auth-token))
   (refresh-projects! [_]
-    (swap! project-atom refresh-projects user repo auth-token))
+    (swap-and-cache! project-atom refresh-projects user repo auth-token))
   (write-project! [_ project]
     (write-project-to-github project user repo auth-token)
-    (swap! project-atom assoc (:db/id project) project))
+    (swap-and-cache! project-atom assoc (:db/id project) project))
   (project-list [_]
     (or (vals @project-atom) [])))
 
 (defmethod ig/init-key :open-source.db/github [_ {:keys [user repo auth-token] :as github-config}]
+  (reset! projects (read-cache))
   (let [project-db (map->ProjectDb (assoc github-config :project-atom projects))]
     (refresh-projects! project-db)
     project-db))

@@ -11,3 +11,4 @@ infrastructure/ansible/prod
 certs
 ga-oauth-key*
 logs
+projects.edn

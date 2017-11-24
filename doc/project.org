@@ -74,12 +74,15 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 *** investigate exception thrown by clj-http
 *** read response headers
 *** exception gets caught, returns nil
-** TODO local cache of db
+** DONE local cache of db
 *** Write local cache on each refresh
 *** Read local cache on start
-** TODO startup
+** DONE startup
 *** Read local cache
 *** Read remote
-** TODO print rate limit
-** TODO figure out why db gets nuked
-** TODO change timeout
+** DONE print rate limit
+** DONE figure out why db gets nuked
+** DONE change timeout
+** TODO add etags!
+*** memoize? some kind of atom to keep track of url/etag?
+*** 
