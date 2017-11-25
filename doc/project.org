@@ -86,3 +86,9 @@ https://developer.github.com/v3/repos/statistics/#get-the-weekly-commit-count-fo
 ** TODO add etags!
 *** memoize? some kind of atom to keep track of url/etag?
 *** 
+
+* deploy
+** back up existing server
+** test that job board works with java 1.8 (run a separate local deploy with updated setup)
+** update to java 1.8
+** deploy

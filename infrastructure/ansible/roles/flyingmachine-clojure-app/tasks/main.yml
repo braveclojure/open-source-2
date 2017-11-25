@@ -15,7 +15,7 @@
 - name: Install required system packages
   apt: pkg="{{item}}" state=installed update-cache=yes
   with_items:
-  - openjdk-7-jre
+  - openjdk-8-jre
   - wget
   - unzip
   - vim
