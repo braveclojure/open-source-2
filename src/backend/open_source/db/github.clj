@@ -245,9 +245,9 @@
     (swap-and-cache! project-atom replace-local-projects user repo auth-token))
   (refresh-projects! [_]
     (swap-and-cache! project-atom refresh-projects user repo auth-token))
-  (write-project! [_ project]
+  (write-project! [project-db project]
     (write-project-to-github project user repo auth-token)
-    (swap-and-cache! project-atom assoc (:db/id project) project))
+    (refresh-projects! project-db))
   (project-list [_]
     (or (vals @project-atom) [])))
 
