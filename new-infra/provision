@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ansible
+ansible-playbook -i inventories/$1 sweet-tooth.yml --skip-tags=deploy

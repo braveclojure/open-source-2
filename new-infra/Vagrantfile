@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+def f(path)
+  File.dirname(__FILE__) + "/" + path
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+
+  # The Clojure app is a process running on port 3000 by default
+  # (you can customize this)
+  # This lets you view the app directly (without nginx in front of it)
+  # by visiting localhost:3100
+  config.vm.network :forwarded_port, guest: 3000, host: 3100
+
+  # Use localhost:8000 to connect to nginx
+  config.vm.network :forwarded_port, guest: 80, host: 8000
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = f "ansible/sweet-tooth.yml"
+    ansible.groups = {
+      "webservers" => ["default"]
+    }
+    ansible.skip_tags = "deploy"
+    ansible.extra_vars = {
+      clojure_uberjar_webapp_domain: "localhost",
+      clojure_uberjar_webapp_app_env_local_path: "ansible/files/env/dev.sh"
+    }
+  end
+  config.vm.provider "virtualbox" do |v|
+    # Modify this to match the droplet size you plan on using
+    v.memory = 2056
+  end
+end

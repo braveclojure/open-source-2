@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ..
+boot build
+chmod 755 target/build/app.jar

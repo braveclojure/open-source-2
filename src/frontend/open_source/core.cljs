@@ -33,6 +33,7 @@
    @(subscribe [::strf/routed-component])])
 
 (defn -main []
+  (println "starting!")
   (dispatch-sync [:init])
   (r/render [app] (stcu/el-by-id "app"))
   (acc/dispatch-current!))

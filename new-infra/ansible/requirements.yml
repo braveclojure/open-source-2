@@ -1,0 +1,5 @@
+---
+- src: "sweet-tooth-clojure.clojure-uberjar-webapp-common"
+- src: "sweet-tooth-clojure.clojure-uberjar-webapp-app"
+- src: "sweet-tooth-clojure.clojure-uberjar-webapp-nginx"
+- src: "sweet-tooth-clojure.clojure-uberjar-webapp-datomic-free"

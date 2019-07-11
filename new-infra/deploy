@@ -1,0 +1,5 @@
+#!/bin/bash
+mkdir -p ansible/files
+cp ../target/build/app.jar ansible/files/app.jar
+cd ansible
+ansible-playbook -i inventories/$1 sweet-tooth.yml --skip-tags=install

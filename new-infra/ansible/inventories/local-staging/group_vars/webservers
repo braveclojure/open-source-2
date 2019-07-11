@@ -1,0 +1,4 @@
+# -*- mode: yaml -*-
+---
+clojure_uberjar_webapp_domain: localhost
+clojure_uberjar_webapp_app_env_local_path: files/env/local-staging.sh

@@ -1,0 +1,27 @@
+---
+- hosts: database
+  become: true
+  become_method: sudo
+  vars_files:
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-common/defaults/main.yml"
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-nginx/defaults/main.yml"
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-app/defaults/main.yml"
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-datomic-free/defaults/main.yml"
+  vars:
+    datomic_backup_zip_name: "{{ clojure_uberjar_webapp_app_name }}_backup.tar.gz"
+    datomic_backup_zip_path: "{{clojure_uberjar_webapp_app_root}}/{{ datomic_backup_zip_name }}"
+    datomic_backup_dir: "{{clojure_uberjar_webapp_app_root}}/db-backups"
+    
+  tasks:
+    - name: create backup dir
+      file: state=directory path="{{ datomic_backup_dir }}"
+    - name: run backup
+      command: "{{ datomic_dir }}/runtime/bin/datomic -Xmx400m -Xms400m backup-db {{ datomic_uri }} file:{{ datomic_backup_dir }}"
+    - name: archive backup dir
+      command: chdir="{{ clojure_uberjar_webapp_app_root }}" tar -zcvf {{ datomic_backup_zip_name }} db-backups
+    - name: fetch backup
+      fetch:
+        flat: yes
+        fail_on_missing: yes
+        src: "{{ datomic_backup_zip_path }}"
+        dest: "/Users/daniel/tmp/datomic-backups/{{ datomic_backup_zip_name }}"

@@ -1,0 +1,5 @@
+# -*- mode: yaml -*-
+---
+clojure_uberjar_webapp_domain: open-source.braveclojure.com
+clojure_uberjar_webapp_app_env_local_path: files/env/prod.sh
+clojure_uberjar_webapp_app_http_port: 7000

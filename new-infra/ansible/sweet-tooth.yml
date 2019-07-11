@@ -1,0 +1,20 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  become_method: sudo
+  
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: webservers
+  become: true
+  become_method: sudo
+  vars:
+    clojure_uberjar_webapp_nginx_use_ssl: true
+    clojure_uberjar_webapp_app_perform_check: false
+  roles:
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-common"
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-nginx"
+    - "~/projects/web/sweet-tooth/clojure-uberjar-webapp/clojure-uberjar-webapp-app"

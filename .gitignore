@@ -8,7 +8,11 @@ node_modules
 .vagrant
 infrastructure/ansible/files/env
 infrastructure/ansible/prod
+new-infra/ansible/files/env
+new-infra/ansible/prod
 certs
-ga-oauth-key*
 logs
 projects.edn
+datomic
+*.log
+*.retry

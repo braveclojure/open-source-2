@@ -1,25 +1,26 @@
 (set-env!
   :source-paths #{"src/backend" "src/frontend" "src/cross" "dev/src" "test/backend"}
   :resource-paths #{"resources" "dev/resources"}
-  :dependencies '[[org.clojure/clojure "1.9.0-alpha12"]
-                  [org.clojure/clojurescript "1.9.854"]
+  :dependencies '[[org.clojure/clojure "1.9.0"]
+                  [org.clojure/clojurescript "1.10.520"]
                   [adzerk/boot-cljs "RELEASE" :scope "test"]
                   [com.taoensso/timbre "4.10.0"]
+                  [org.clojure/core.async "0.4.500"]
 
                   [org.clojure/tools.logging "0.3.1"]
                   [ring "1.5.0" :exclusions [org.clojure/tools.namespace]]
                   [ring-jetty-component "0.3.1"]
-                  [liberator "0.14.1"]
+                  [liberator "0.15.3"]
                   [com.flyingmachine/liberator-unbound "0.1.1"]
                   [com.flyingmachine/webutils "0.1.6"]
                   [compojure "1.5.0"]
+                  [org.flatland/ordered "1.5.7"]
                   [medley "0.7.1"]
                   [clj-time "0.14.0"]
                   [cheshire "5.6.2"]
                   [tentacles "0.5.1"]
                   [hiccup "1.0.5"]
                   [me.raynes/cegdown "0.1.1"]
-                  [http-kit "2.1.16"]
                   [clj-http "3.7.0"]
 
                   ;; TODO fix the fact that this is needed
@@ -48,7 +49,7 @@
 
 (def sweet-tooth-packages
   "Define this seperately so packages can get included as checkouts"
-  '[[sweet-tooth/sweet-tooth-frontend "0.2.8-SNAPSHOT"]
+  '[[sweet-tooth/sweet-tooth-frontend "0.2.8"]
     [sweet-tooth/sweet-tooth-endpoint "0.2.2"]
     [sweet-tooth/sweet-tooth-workflow "0.2.4"]])
 
